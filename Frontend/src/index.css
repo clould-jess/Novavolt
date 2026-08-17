@@ -1,0 +1,106 @@
+/* @import url() FONT IMPORTS MUST ALWAYS BE AT THE VERY TOP OF THIS FILE, ABOVE THE TAILWIND IMPORTS — DO NOT DELETE THIS COMMENT */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
+
+/* CRITICAL: THE FOLLOWING TAILWIND IMPORTS MUST NEVER BE DELETED OR REORDERED — DO NOT DELETE THIS COMMENT */
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* END TAILWIND IMPORTS — ALL OTHER CSS MUST GO BELOW THIS LINE */
+
+:root {
+  --nv-canvas: #ffffff;
+  --nv-soft: #f7fafc;
+  --nv-surface: #f1f5f9;
+  --nv-line: #e2e8f0;
+  --nv-ink: #0f172a;
+  --nv-body: #111827;
+  --nv-muted: #64748b;
+  --nv-sky: #38bdf8;
+  --nv-action: #0284c7;
+  --nv-action-dark: #0369a1;
+  --nv-ok: #16a34a;
+  --nv-warn: #f59e0b;
+  --nv-bad: #dc2626;
+}
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  background-color: var(--nv-canvas);
+  color: var(--nv-body);
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+*:focus-visible {
+  outline: 2px solid var(--nv-action);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+/* Navigation / text link underline: draws from the centre outwards */
+.nv-link {
+  position: relative;
+}
+.nv-link::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  right: 50%;
+  bottom: -4px;
+  height: 1.5px;
+  background-color: var(--nv-sky);
+  transition: left 180ms cubic-bezier(0.23, 1, 0.32, 1), right 180ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.nv-link:hover::after,
+.nv-link:focus-visible::after,
+.nv-link[data-active='true']::after {
+  left: 0;
+  right: 0;
+}
+.nv-link[data-active='true']::after {
+  background-color: var(--nv-action);
+}
+/* Sliding underline variant: travels left to right */
+.nv-link-slide {
+  position: relative;
+  overflow: hidden;
+}
+.nv-link-slide::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 1.5px;
+  background-color: var(--nv-action);
+  transform: translateX(-101%);
+  transition: transform 220ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.nv-link-slide:hover::after,
+.nv-link-slide:focus-visible::after {
+  transform: translateX(0);
+}
+/* Thin luminous rules used across futuristic accents */
+.nv-hairline {
+  background-image: linear-gradient(90deg, rgba(56, 189, 248, 0) 0%, rgba(56, 189, 248, 0.9) 50%, rgba(56, 189, 248, 0) 100%);
+}
+.nv-scroll-thin::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+.nv-scroll-thin::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
