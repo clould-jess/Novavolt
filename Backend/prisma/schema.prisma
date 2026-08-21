@@ -1,0 +1,515 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CUSTOMER
+  AGENT
+  FLEET_MANAGER
+  ADMIN
+  OWNER
+}
+
+enum UserStatus {
+  PENDING
+  ACTIVE
+  SUSPENDED
+  DISABLED
+}
+
+enum TokenType {
+  EMAIL_VERIFICATION
+  PASSWORD_RESET
+}
+
+enum VehicleStatus {
+  AVAILABLE
+  RESERVED
+  RENTED
+  MAINTENANCE
+  INACTIVE
+}
+
+enum WorkflowStatus {
+  DRAFT
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+enum DocumentType {
+  DRIVERS_LICENSE
+  PROOF_OF_ADDRESS
+  INSURANCE
+  VEHICLE_REGISTRATION
+  INSPECTION_REPORT
+  OTHER
+}
+
+enum DocumentStatus {
+  UPLOADING
+  PENDING
+  APPROVED
+  REJECTED
+  EXPIRED
+}
+
+enum MalwareScanStatus {
+  NOT_STARTED
+  PENDING
+  CLEAN
+  INFECTED
+  ERROR
+}
+
+enum RentalStatus {
+  PENDING
+  ACTIVE
+  OVERDUE
+  COMPLETED
+  CANCELLED
+}
+
+enum InvoiceStatus {
+  DRAFT
+  OPEN
+  PAID
+  VOID
+  OVERDUE
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+  REFUNDED
+}
+
+enum DepositStatus {
+  PENDING
+  HELD
+  RELEASED
+  PARTIALLY_CAPTURED
+  CAPTURED
+  REFUNDED
+}
+
+enum MaintenanceStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum IncidentStatus {
+  OPEN
+  INVESTIGATING
+  RESOLVED
+  CLOSED
+}
+
+enum NotificationStatus {
+  QUEUED
+  SENDING
+  SENT
+  FAILED
+}
+
+model User {
+  id                   String           @id @default(cuid())
+  email                String           @unique
+  passwordHash         String
+  role                 Role             @default(CUSTOMER)
+  status               UserStatus       @default(PENDING)
+  emailVerifiedAt      DateTime?
+  failedLoginAttempts  Int              @default(0)
+  lockedUntil          DateTime?
+  lastLoginAt          DateTime?
+  passwordChangedAt    DateTime         @default(now())
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
+  profile              CustomerProfile?
+  sessions             Session[]
+  oneTimeTokens        OneTimeToken[]
+  documents            Document[]       @relation("CustomerDocuments")
+  reviewedDocuments    Document[]       @relation("ReviewedDocuments")
+  applications         Application[]    @relation("CustomerApplications")
+  reviewedApplications Application[]    @relation("ReviewedApplications")
+  reviewedBookings     Booking[]        @relation("ReviewedBookings")
+  bookings             Booking[]
+  rentals              Rental[]
+  auditLogs            AuditLog[]       @relation("ActorAuditLogs")
+  notifications        Notification[]
+
+  @@index([status, role])
+  @@index([createdAt])
+}
+
+model Session {
+  id               String    @id @default(cuid())
+  userId           String
+  refreshTokenHash String
+  tokenVersion     Int       @default(0)
+  expiresAt        DateTime
+  revokedAt        DateTime?
+  revokedReason    String?
+  userAgent        String?
+  ipAddress        String?
+  lastUsedAt       DateTime  @default(now())
+  createdAt        DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, expiresAt])
+  @@index([expiresAt, revokedAt])
+}
+
+model OneTimeToken {
+  id        String    @id @default(cuid())
+  userId    String
+  type      TokenType
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, type, expiresAt])
+}
+
+model CustomerProfile {
+  id         String   @id @default(cuid())
+  userId     String   @unique
+  firstName  String
+  lastName   String
+  phone      String?
+  address    String?
+  city       String?
+  province   String?
+  postalCode String?
+  language   String   @default("fr")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Vehicle {
+  id              String        @id @default(cuid())
+  vin             String        @unique
+  make            String
+  model           String
+  year            Int
+  color           String?
+  plate           String        @unique
+  powertrain      String
+  odometer        Int           @default(0)
+  weeklyRateCents Int
+  currency        String        @default("CAD")
+  status          VehicleStatus @default(AVAILABLE)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  photos       VehiclePhoto[]
+  applications Application[]
+  bookings     Booking[]
+  rentals      Rental[]
+  maintenance  MaintenanceRecord[]
+
+  @@index([status, createdAt])
+}
+
+model VehiclePhoto {
+  id                String            @id @default(cuid())
+  vehicleId         String
+  storageKey        String
+  mimeType          String
+  sizeBytes         Int
+  altText           String?
+  sortOrder         Int               @default(0)
+  uploadedAt        DateTime?
+  malwareScanStatus MalwareScanStatus @default(NOT_STARTED)
+  createdAt         DateTime          @default(now())
+
+  vehicle Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+  @@unique([vehicleId, storageKey])
+  @@index([vehicleId, sortOrder])
+}
+
+model Application {
+  id                 String         @id @default(cuid())
+  customerId         String
+  requestedVehicleId String?
+  status             WorkflowStatus @default(PENDING)
+  customerNote       String?
+  reviewNote         String?
+  submittedAt        DateTime       @default(now())
+  reviewedAt         DateTime?
+  reviewedById       String?
+  updatedAt          DateTime       @updatedAt
+
+  customer         User     @relation("CustomerApplications", fields: [customerId], references: [id], onDelete: Cascade)
+  reviewedBy       User?    @relation("ReviewedApplications", fields: [reviewedById], references: [id])
+  requestedVehicle Vehicle? @relation(fields: [requestedVehicleId], references: [id])
+
+  @@index([customerId, status])
+  @@index([status, submittedAt])
+  @@index([requestedVehicleId])
+}
+
+model Document {
+  id                String            @id @default(cuid())
+  customerId        String
+  type              DocumentType
+  storageKey        String            @unique
+  originalName      String
+  mimeType          String
+  sizeBytes         Int
+  checksum          String?
+  status            DocumentStatus    @default(UPLOADING)
+  malwareScanStatus MalwareScanStatus @default(NOT_STARTED)
+  expiresAt         DateTime?
+  reviewedAt        DateTime?
+  reviewedById      String?
+  rejectionReason   String?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  customer   User  @relation("CustomerDocuments", fields: [customerId], references: [id], onDelete: Cascade)
+  reviewedBy User? @relation("ReviewedDocuments", fields: [reviewedById], references: [id])
+
+  @@index([customerId, type])
+  @@index([status, expiresAt])
+}
+
+model Booking {
+  id           String         @id @default(cuid())
+  customerId   String
+  vehicleId    String
+  startAt      DateTime
+  endAt        DateTime
+  status       WorkflowStatus @default(PENDING)
+  reviewNote   String?
+  reviewedAt   DateTime?
+  reviewedById String?
+  cancelledAt  DateTime?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  customer   User    @relation(fields: [customerId], references: [id])
+  vehicle    Vehicle @relation(fields: [vehicleId], references: [id])
+  reviewedBy User?   @relation("ReviewedBookings", fields: [reviewedById], references: [id])
+  rental     Rental?
+
+  @@index([vehicleId, startAt, endAt])
+  @@index([customerId, status])
+  @@index([status, startAt])
+}
+
+model Rental {
+  id              String       @id @default(cuid())
+  bookingId       String?      @unique
+  customerId      String
+  vehicleId       String
+  startAt         DateTime
+  endAt           DateTime?
+  weeklyRateCents Int
+  currency        String       @default("CAD")
+  status          RentalStatus @default(PENDING)
+  startOdometer   Int?
+  endOdometer     Int?
+  completedAt     DateTime?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  booking     Booking?            @relation(fields: [bookingId], references: [id])
+  customer    User                @relation(fields: [customerId], references: [id])
+  vehicle     Vehicle             @relation(fields: [vehicleId], references: [id])
+  contracts   Contract[]
+  invoices    Invoice[]
+  deposits    Deposit[]
+  incidents   Incident[]
+  maintenance MaintenanceRecord[]
+
+  @@index([vehicleId, status])
+  @@index([customerId, status])
+  @@index([status, endAt])
+}
+
+model Contract {
+  id           String    @id @default(cuid())
+  rentalId     String
+  version      Int       @default(1)
+  storageKey   String    @unique
+  originalName String
+  mimeType     String    @default("application/pdf")
+  sizeBytes    Int
+  sha256       String?
+  uploadedAt   DateTime?
+  signedAt     DateTime?
+  providerId   String?
+  createdAt    DateTime  @default(now())
+
+  rental Rental @relation(fields: [rentalId], references: [id], onDelete: Cascade)
+
+  @@unique([rentalId, version])
+}
+
+model Invoice {
+  id            String        @id @default(cuid())
+  rentalId      String
+  periodStart   DateTime
+  periodEnd     DateTime
+  subtotalCents Int
+  taxCents      Int
+  totalCents    Int
+  currency      String        @default("CAD")
+  status        InvoiceStatus @default(OPEN)
+  dueAt         DateTime
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  rental   Rental    @relation(fields: [rentalId], references: [id])
+  payments Payment[]
+
+  @@unique([rentalId, periodStart, periodEnd])
+  @@index([status, dueAt])
+  @@index([rentalId, status])
+}
+
+model Payment {
+  id                      String        @id @default(cuid())
+  invoiceId               String
+  provider                String
+  providerPaymentId       String?       @unique
+  providerPaymentMethodId String?
+  idempotencyKey          String        @unique
+  amountCents             Int
+  currency                String        @default("CAD")
+  status                  PaymentStatus @default(PENDING)
+  failureCode             String?
+  paidAt                  DateTime?
+  createdAt               DateTime      @default(now())
+  updatedAt               DateTime      @updatedAt
+
+  invoice Invoice @relation(fields: [invoiceId], references: [id])
+
+  @@index([invoiceId, status])
+  @@index([status, createdAt])
+}
+
+model PaymentWebhook {
+  id                  String    @id @default(cuid())
+  provider            String
+  eventId             String
+  eventType           String
+  payload             Json
+  processingStartedAt DateTime?
+  processedAt         DateTime?
+  error               String?
+  createdAt           DateTime  @default(now())
+
+  @@unique([provider, eventId])
+  @@index([processedAt, createdAt])
+}
+
+model Deposit {
+  id                String        @id @default(cuid())
+  rentalId          String
+  amountCents       Int
+  currency          String        @default("CAD")
+  status            DepositStatus @default(PENDING)
+  providerReference String?
+  heldAt            DateTime?
+  releasedAt        DateTime?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  rental Rental @relation(fields: [rentalId], references: [id])
+
+  @@index([rentalId, status])
+}
+
+model Incident {
+  id          String         @id @default(cuid())
+  rentalId    String
+  category    String
+  description String
+  status      IncidentStatus @default(OPEN)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  resolvedAt  DateTime?
+
+  rental Rental @relation(fields: [rentalId], references: [id])
+
+  @@index([rentalId, status])
+}
+
+model MaintenanceRecord {
+  id          String            @id @default(cuid())
+  vehicleId   String
+  rentalId    String?
+  type        String
+  description String?
+  odometer    Int?
+  costCents   Int?
+  currency    String            @default("CAD")
+  status      MaintenanceStatus @default(SCHEDULED)
+  scheduledAt DateTime?
+  completedAt DateTime?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  vehicle Vehicle @relation(fields: [vehicleId], references: [id])
+  rental  Rental? @relation(fields: [rentalId], references: [id])
+
+  @@index([vehicleId, status, scheduledAt])
+}
+
+model Notification {
+  id          String             @id @default(cuid())
+  userId      String
+  channel     String
+  template    String
+  destination String
+  payload     Json?
+  status      NotificationStatus @default(QUEUED)
+  attempts    Int                @default(0)
+  providerId  String?
+  lastError   String?
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  sentAt      DateTime?
+  readAt      DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([status, createdAt])
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  actorUserId String?
+  action      String
+  entityType  String
+  entityId    String?
+  metadata    Json?
+  ipAddress   String?
+  requestId   String?
+  createdAt   DateTime @default(now())
+
+  actor User? @relation("ActorAuditLogs", fields: [actorUserId], references: [id])
+
+  @@index([entityType, entityId, createdAt])
+  @@index([actorUserId, createdAt])
+  @@index([createdAt])
+}
