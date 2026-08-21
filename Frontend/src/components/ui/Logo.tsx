@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { useI18n } from '../../contexts/I18nContext';
 import { cn } from '../../utils/cn';
@@ -8,39 +7,43 @@ interface LogoProps {
   className?: string;
   to?: string;
   compact?: boolean;
+  transparent?: boolean;
 }
 
 /**
- * Novavolt wordmark: an abstract energy arc + bolt notch, original mark.
- * Works on light and dark surfaces via the `tone` prop.
+ * Official Novavolt logo.
+ *
+ * Both supplied assets are square and contain space around a horizontal mark.
+ * This viewport crops that space visually while keeping the source files
+ * untouched and the logo legible in every layout.
  */
-export function Logo({ tone = 'dark', className, to = '/', compact = false }: LogoProps) {
+export function Logo({ className, to = '/', compact = false, transparent = false }: LogoProps) {
   const { t } = useI18n();
-  const text = tone === 'dark' ? 'text-ink' : 'text-white';
 
   return (
-    <Link to={to} className={cn('group inline-flex items-center gap-2.5', className)} aria-label={t('common.brand')}>
+    <Link
+      to={to}
+      className={cn(
+        'block shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action focus-visible:ring-offset-2',
+        className
+      )}
+      aria-label={`${t('common.brand')} — ${t('common.tagline')}`}
+    >
       <span
         className={cn(
-          'relative grid h-9 w-9 shrink-0 place-items-center rounded-xl',
-          tone === 'dark' ? 'bg-ink' : 'bg-white/10 ring-1 ring-inset ring-white/25'
-        )}>
-        
-        <svg viewBox="0 0 24 24" className="h-5 w-5" role="img" aria-label={t('common.logoAlt')}>
-          <path
-            d="M4 17.5C4 10.6 8.6 6 15.5 6"
-            fill="none"
-            stroke="#38BDF8"
-            strokeWidth="2"
-            strokeLinecap="round" />
-          
-          <path d="M13.6 9.6h5.2l-3.1 4h3.4l-6.2 6.4 1.6-4.6h-3z" fill="#FFFFFF" />
-        </svg>
+          'relative block overflow-hidden',
+          compact ? 'h-10 w-24' : 'h-12 w-32 sm:w-36'
+        )}
+      >
+        <img
+          src={transparent ? '/logo2.png' : '/logo.jpeg'}
+          alt={t('common.logoAlt')}
+          width={transparent ? 512 : 1254}
+          height={transparent ? 512 : 1254}
+          className="absolute left-0 top-1/2 h-auto w-full -translate-y-1/2 select-none object-contain"
+          draggable={false}
+        />
       </span>
-      <span className={cn('font-display text-[1.0625rem] font-extrabold tracking-[-0.02em]', text)}>
-        NOVA<span className="text-action">VOLT</span>
-        {!compact && <span className="sr-only"> — {t('common.tagline')}</span>}
-      </span>
-    </Link>);
-
+    </Link>
+  );
 }

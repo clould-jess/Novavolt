@@ -21,7 +21,7 @@ export function Footer() {
       <div className="mx-auto max-w-content px-4 py-14 sm:px-6 lg:px-8 lg:py-16">
         <div className="grid gap-10 lg:grid-cols-[1.4fr_repeat(3,1fr)]">
           <div>
-            <Logo tone="light" />
+            <Logo tone="light" transparent />
             <p className="mt-4 max-w-sm text-2xs leading-relaxed">{t('footer.promise')}</p>
             <ul className="mt-5 flex gap-2" aria-label={t('footer.social')}>
               {socials.map(({ key, icon: Icon }) =>

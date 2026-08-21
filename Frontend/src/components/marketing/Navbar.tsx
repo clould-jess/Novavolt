@@ -49,7 +49,7 @@ export function Navbar() {
       )}
     >
       <div className="mx-auto flex h-16 max-w-content items-center justify-between gap-6 px-4 sm:px-6 lg:h-[4.5rem] lg:px-8">
-        <Logo tone={tone} />
+        <Logo tone={tone} transparent />
 
         {/* Desktop Navigation */}
         <nav aria-label={t('common.menu')} className="hidden items-center gap-2 lg:flex">
