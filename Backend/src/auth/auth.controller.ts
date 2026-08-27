@@ -18,8 +18,8 @@ import { AuthService } from './auth.service';
 import {
   ChangePasswordDto,
   EmailDto,
+  EmailCodeDto,
   LoginDto,
-  OpaqueTokenDto,
   RefreshDto,
   RegisterDto,
   ResetPasswordDto,
@@ -69,8 +69,8 @@ export class AuthController {
   @Throttle({ default: { limit: 10, ttl: 60_000 } })
   @HttpCode(200)
   @Post('email-verification/confirm')
-  verifyEmail(@Body() dto: OpaqueTokenDto) {
-    return this.auth.verifyEmail(dto.token);
+  verifyEmail(@Body() dto: EmailCodeDto) {
+    return this.auth.verifyEmail(dto);
   }
 
   @Throttle({ default: { limit: 3, ttl: 300_000 } })
@@ -118,13 +118,13 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('sessions')
   sessions(@CurrentUser() user: AuthUser) {
-    return this.auth.listSessions(user.id);
+    return this.auth.listSessions(user.id, user.sessionId);
   }
 
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Delete('sessions/:id')
   revokeSession(@CurrentUser() user: AuthUser, @Param('id') id: string) {
-    return this.auth.revokeSession(user.id, id);
+    return this.auth.revokeSession(user.id, id, user.sessionId);
   }
 }

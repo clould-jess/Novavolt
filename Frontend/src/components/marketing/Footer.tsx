@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { FacebookIcon, InstagramIcon, LinkedinIcon, MailIcon, PhoneIcon } from 'lucide-react';
 import { useI18n } from '../../contexts/I18nContext';
-import { footerExplore, footerLegal, footerProfiles } from '../../data/navigation';
+import { footerExplore, footerLegal } from '../../data/navigation';
 import { Logo } from '../ui/Logo';
 import { LanguageSwitcher } from './LanguageSwitcher';
 
@@ -19,9 +19,9 @@ export function Footer() {
   return (
     <footer className="bg-ink text-sky-100/70">
       <div className="mx-auto max-w-content px-4 py-14 sm:px-6 lg:px-8 lg:py-16">
-        <div className="grid gap-10 lg:grid-cols-[1.4fr_repeat(3,1fr)]">
+        <div className="grid gap-10 lg:grid-cols-[1.4fr_repeat(2,1fr)]">
           <div>
-            <Logo tone="light" transparent />
+            <Logo variant="footer" />
             <p className="mt-4 max-w-sm text-2xs leading-relaxed">{t('footer.promise')}</p>
             <ul className="mt-5 flex gap-2" aria-label={t('footer.social')}>
               {socials.map(({ key, icon: Icon }) =>
@@ -42,19 +42,6 @@ export function Footer() {
             <h2 className="text-2xs font-semibold text-white">{t('footer.explore')}</h2>
             <ul className="mt-4 flex flex-col gap-2.5">
               {footerExplore.map((item) =>
-              <li key={item.to}>
-                  <Link to={item.to} className="nv-link text-2xs hover:text-white">
-                    {t(item.labelKey)}
-                  </Link>
-                </li>
-              )}
-            </ul>
-          </nav>
-
-          <nav aria-label={t('footer.profiles')}>
-            <h2 className="text-2xs font-semibold text-white">{t('footer.profiles')}</h2>
-            <ul className="mt-4 flex flex-col gap-2.5">
-              {footerProfiles.map((item) =>
               <li key={item.to}>
                   <Link to={item.to} className="nv-link text-2xs hover:text-white">
                     {t(item.labelKey)}

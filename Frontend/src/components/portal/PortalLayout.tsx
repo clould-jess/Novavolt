@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { NavLink, Outlet, useLocation } from 'react-router-dom';
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { LogOutIcon, MenuIcon, PhoneIcon, XIcon } from 'lucide-react';
 import { useI18n } from '../../contexts/I18nContext';
 import { currentCustomer, customerName } from '../../data/customers';
@@ -9,17 +9,51 @@ import { cn } from '../../utils/cn';
 import { IconButton } from '../ui/IconButton';
 import { Logo } from '../ui/Logo';
 import { StatusBadge } from '../ui/StatusBadge';
+import { Button } from '../ui/Button';
+import { Modal } from '../ui/Modal';
 import { LanguageSwitcher } from '../marketing/LanguageSwitcher';
+import { clearAuthSession, getAuthSession, logout as signOut } from '../../services/auth';
 
 export function PortalLayout() {
   const { t } = useI18n();
+  const navigate = useNavigate();
   const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
+  const [logoutOpen, setLogoutOpen] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
 
   useEffect(() => {
     setOpen(false);
     window.scrollTo({ top: 0, behavior: 'auto' });
   }, [pathname]);
+
+  useEffect(() => {
+    const session = getAuthSession();
+    if (!session?.accessToken) {
+      clearAuthSession();
+      navigate('/connexion', { replace: true });
+      return;
+    }
+
+    if (session.user.role === 'ADMIN' || session.user.role === 'OWNER') {
+      navigate('/admin', { replace: true });
+      return;
+    }
+
+    clearAuthSession();
+    navigate('/connexion', { replace: true });
+  }, [navigate]);
+
+  const handleLogout = async () => {
+    setLoggingOut(true);
+    try {
+      await signOut();
+      navigate('/connexion', { replace: true });
+    } finally {
+      setLoggingOut(false);
+      setLogoutOpen(false);
+    }
+  };
 
   const nav =
   <nav aria-label={t('portal.label')} className="flex flex-col gap-1">
@@ -64,13 +98,13 @@ export function PortalLayout() {
               <p className="truncate text-[0.75rem] text-muted">{t(`useCase.${currentCustomer.profile}`)}</p>
             </div>
           </div>
-          <NavLink
-            to="/connexion"
-            className="mt-3 flex items-center gap-2 rounded-xl px-3 py-2 text-2xs font-semibold text-muted transition-colors duration-200 hover:bg-surface hover:text-ink">
-            
+          <button
+            type="button"
+            onClick={() => setLogoutOpen(true)}
+            className="mt-3 flex w-full items-center gap-2 rounded-xl px-3 py-2 text-2xs font-semibold text-muted transition-colors duration-200 hover:bg-surface hover:text-ink">
             <LogOutIcon className="h-4 w-4" aria-hidden="true" />
             {t('common.signOut')}
-          </NavLink>
+          </button>
         </div>
       </aside>
 
@@ -104,6 +138,13 @@ export function PortalLayout() {
           <div className="border-t border-line bg-white p-4 lg:hidden">
               {nav}
               <StatusBadge kind="file" value={currentCustomer.fileStatus} className="mt-4" />
+              <button
+                type="button"
+                onClick={() => setLogoutOpen(true)}
+                className="mt-4 flex w-full items-center gap-2 rounded-xl px-3 py-2 text-2xs font-semibold text-muted transition-colors duration-200 hover:bg-surface hover:text-ink">
+                <LogOutIcon className="h-4 w-4" aria-hidden="true" />
+                {t('common.signOut')}
+              </button>
             </div>
           }
         </header>
@@ -114,6 +155,23 @@ export function PortalLayout() {
           </div>
         </main>
       </div>
+
+      <Modal
+        open={logoutOpen}
+        onClose={() => setLogoutOpen(false)}
+        title={t('common.logoutConfirm')}
+        description={t('common.logoutBody')}
+        footer={
+          <>
+            <Button variant="secondary" onClick={() => setLogoutOpen(false)}>
+              {t('common.cancel')}
+            </Button>
+            <Button variant="danger" onClick={handleLogout} loading={loggingOut}>
+              {t('common.signOut')}
+            </Button>
+          </>
+        }
+      />
     </div>);
 
 }

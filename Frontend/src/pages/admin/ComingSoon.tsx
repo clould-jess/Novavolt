@@ -15,13 +15,17 @@ export function AdminComingSoon() {
 
   return (
     <div className="flex flex-col gap-6">
-      <PageHeading title={item ? t(item.labelKey) : t('admin.label')} description={t('admin.reports.subtitle')} />
+      <PageHeading
+        title={item ? t(item.labelKey) : t('admin.label')}
+        description={t('admin.comingSoonBody')}
+      />
       <EmptyState
         icon={<LayersIcon className="h-5 w-5" />}
-        title={item ? t(item.labelKey) : t('admin.label')}
-        body={t('common.notice')}
-        action={<Button to="/admin">{t('admin.nav.dashboard')}</Button>} />
-      
-    </div>);
+        title={t('admin.comingSoonTitle')}
+        body={t('admin.comingSoonBody')}
+        action={<Button to="/admin">{t('admin.nav.dashboard')}</Button>}
+      />
+    </div>
+  );
 
 }

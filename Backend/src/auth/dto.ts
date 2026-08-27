@@ -10,6 +10,7 @@ import {
 const strongPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d\s]).+$/;
 
 export class RegisterDto {
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
   @IsEmail()
   @MaxLength(254)
   email!: string;
@@ -34,6 +35,7 @@ export class RegisterDto {
 }
 
 export class LoginDto {
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
   @IsEmail()
   @MaxLength(254)
   email!: string;
@@ -50,18 +52,28 @@ export class RefreshDto {
 }
 
 export class EmailDto {
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
   @IsEmail()
   @MaxLength(254)
   email!: string;
 }
 
-export class OpaqueTokenDto {
+export class EmailCodeDto {
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
+  @IsEmail()
+  @MaxLength(254)
+  email!: string;
+
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
   @IsString()
-  @Length(32, 256)
-  token!: string;
+  @Length(6, 6)
+  @Matches(/^\d{6}$/, {
+    message: 'code must be a 6-digit number',
+  })
+  code!: string;
 }
 
-export class ResetPasswordDto extends OpaqueTokenDto {
+export class ResetPasswordDto extends EmailCodeDto {
   @IsString()
   @Length(12, 128)
   @Matches(strongPassword, {

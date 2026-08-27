@@ -1,51 +1,51 @@
-# Déploiement
+# Deployment
 
-## Ordre recommandé
+## Recommended order
 
-1. Créer une base PostgreSQL 16 privée avec sauvegardes et restauration ponctuelle.
-2. Créer un utilisateur applicatif limité à la base NovaVolt.
-3. Configurer les secrets et variables depuis `.env.example` dans un gestionnaire de secrets.
-4. Construire une image immuable avec `docker build -t novavolt-api:<version> .`.
-5. Exécuter `npm run prisma:deploy` comme tâche de livraison unique.
-6. Déployer l’API derrière un répartiteur TLS avec `/api/v1/health/ready` comme sonde.
-7. Tester l’inscription, la notification, le téléversement, le verdict antimalware et un paiement Stripe en mode test.
+1. Create a private PostgreSQL database with backups and point-in-time recovery.
+2. Create a limited application user for NovaVolt.
+3. Set secrets and variables from `.env.example` in your secret manager.
+4. Build the backend with the Node scripts in this repository and publish the immutable artifact.
+5. Run `npm run prisma:deploy` as the single migration step.
+6. Deploy the API behind TLS and use `/api/v1/health/ready` as the readiness probe.
+7. Test signup, notifications, file uploads, malware checks, and a Stripe test payment.
 
-Générez `NOTIFICATION_PAYLOAD_ENCRYPTION_KEY` avec `openssl rand -hex 32`. Sa perte empêche la livraison des notifications déjà en attente; sa rotation doit donc prévoir le drainage de la file ou une migration des enveloppes.
+Generate `NOTIFICATION_PAYLOAD_ENCRYPTION_KEY` with `openssl rand -hex 32`.
 
-Ne lancez pas plusieurs tâches de migration concurrentes. Conservez au moins une sauvegarde vérifiée avant toute migration destructive future.
+Do not run multiple migration tasks at the same time. Keep at least one verified backup before any future destructive migration.
 
-## Base de données
+## Database
 
-La migration initiale active `btree_gist`, ajoute des contraintes métier et une contrainte d’exclusion PostgreSQL sur les réservations approuvées. L’utilisateur qui exécute la migration doit pouvoir créer cette extension. L’utilisateur d’exécution quotidien n’a pas besoin de droits de création de schéma.
+The initial migration enables the required PostgreSQL constraints for the rental workflow. The migration user must be allowed to create the required extension. The runtime user does not need schema-creation privileges.
 
-Les journaux d’audit sont protégés par un déclencheur qui refuse leur modification ou suppression. Définissez une politique d’archivage conforme avant que la table ne devienne volumineuse; ne contournez pas le déclencheur depuis l’application.
+Audit logs are protected by a trigger that blocks updates and deletes. Plan a retention policy before the table grows large.
 
-## Stockage privé
+## Private storage
 
-- utilisez un compartiment non public, chiffré et versionné;
-- préférez un rôle IAM de charge de travail aux clés statiques;
-- limitez ce rôle au préfixe et au compartiment configurés;
-- configurez CORS du stockage uniquement pour le domaine web nécessaire;
-- faites appeler le webhook HMAC par votre pipeline d’analyse après chaque téléversement;
-- appliquez une règle de rétention et une politique de suppression documentée.
+- use a private, encrypted, versioned bucket;
+- prefer workload IAM credentials over static keys;
+- restrict access to the configured bucket and prefix;
+- configure storage CORS only for the required web origin;
+- call the malware-scan webhook after each upload;
+- document retention and deletion policies.
 
 ## Stripe
 
-Configurez le webhook sur :
+Configure the webhook on:
 
 ```text
 POST https://<api>/api/v1/payments/webhooks/stripe
 ```
 
-Événements gérés : `payment_intent.succeeded`, `payment_intent.payment_failed`, `payment_intent.canceled` et `charge.refunded`. Conservez la vérification de signature sur le corps brut et utilisez un secret distinct par environnement.
+Supported events: `payment_intent.succeeded`, `payment_intent.payment_failed`, `payment_intent.canceled`, and `charge.refunded`.
 
-## Arrêt, démarrage et retour arrière
+## Shutdown and rollback
 
-L’application écoute `SIGTERM` grâce aux hooks d’arrêt NestJS. Lors d’un retour arrière, ne revenez à une ancienne image que si son schéma est compatible avec la migration déjà appliquée. Corrigez une migration publiée avec une nouvelle migration; ne modifiez pas un fichier de migration qui a déjà été exécuté en production.
+The application handles `SIGTERM` with Nest shutdown hooks. If you roll back, only use an older release when its schema is still compatible with the already-applied migration. Fix a published migration with a new migration; do not edit a migration file that has already run in production.
 
-## Observabilité minimale
+## Minimum observability
 
-- centraliser les sorties structurées HTTP;
-- alerter sur les échecs `/health/ready`, les réponses 5xx et les webhooks en erreur;
-- surveiller les notifications `FAILED`, documents `ERROR`, factures `OVERDUE` et locations `OVERDUE`;
-- ne jamais journaliser les JWT, secrets, corps Stripe complets ou URL présignées.
+- centralize structured HTTP logs;
+- alert on `/health/ready` failures, 5xx responses, and webhook errors;
+- monitor `FAILED` notifications, `ERROR` documents, `OVERDUE` invoices, and `OVERDUE` rentals;
+- never log JWTs, secrets, full Stripe payloads, or presigned URLs.

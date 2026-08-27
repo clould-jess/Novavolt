@@ -121,6 +121,24 @@ enum NotificationStatus {
   FAILED
 }
 
+enum AdminNotificationType {
+  FLEET_REQUEST
+  RESERVATION_REQUEST
+  CONTACT_MESSAGE
+}
+
+enum FleetPartnerLeadStatus {
+  NEW
+  CONTACTED
+  ARCHIVED
+}
+
+enum ReservationRequestStatus {
+  NEW
+  CONTACTED
+  ARCHIVED
+}
+
 model User {
   id                   String           @id @default(cuid())
   email                String           @unique
@@ -208,6 +226,10 @@ model Vehicle {
   model           String
   year            Int
   color           String?
+  city            String?
+  seats           Int?
+  rangeKm         Int?
+  description     String?
   plate           String        @unique
   powertrain      String
   odometer        Int           @default(0)
@@ -220,6 +242,7 @@ model Vehicle {
   photos       VehiclePhoto[]
   applications Application[]
   bookings     Booking[]
+  reservationRequests ReservationRequest[]
   rentals      Rental[]
   maintenance  MaintenanceRecord[]
 
@@ -230,6 +253,10 @@ model VehiclePhoto {
   id                String            @id @default(cuid())
   vehicleId         String
   storageKey        String
+  imagekitFileId    String?           @unique
+  imagekitFilePath  String?
+  imagekitUrl       String?
+  imagekitThumbnailUrl String?
   mimeType          String
   sizeBytes         Int
   altText           String?
@@ -494,6 +521,77 @@ model Notification {
 
   @@index([userId, createdAt])
   @@index([status, createdAt])
+}
+
+
+model AdminNotification {
+  id         String                @id @default(cuid())
+  type       AdminNotificationType
+  entityId   String
+  title      String
+  preview    String
+  metadata   Json?
+  readAt     DateTime?
+  archivedAt DateTime?
+  createdAt  DateTime              @default(now())
+
+  @@index([readAt, createdAt])
+  @@index([type, entityId])
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  subject   String
+  message   String
+  emailSentAt DateTime?
+  emailError  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([createdAt])
+  @@index([email, createdAt])
+}
+model FleetPartnerLead {
+  id           String                 @id @default(cuid())
+  name         String
+  email        String
+  phone        String
+  company      String
+  vehicleCount String
+  message      String?
+  status       FleetPartnerLeadStatus @default(NEW)
+  emailSentAt  DateTime?
+  emailError   String?
+  createdAt    DateTime               @default(now())
+  updatedAt    DateTime               @updatedAt
+
+  @@index([status, createdAt])
+  @@index([email, createdAt])
+}
+
+model ReservationRequest {
+  id          String                   @id @default(cuid())
+  vehicleId   String
+  name        String
+  email       String
+  phone       String
+  startAt     DateTime
+  endAt       DateTime
+  message     String?
+  status      ReservationRequestStatus @default(NEW)
+  emailSentAt DateTime?
+  emailError  String?
+  createdAt   DateTime                 @default(now())
+  updatedAt   DateTime                 @updatedAt
+
+  vehicle Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Restrict)
+
+  @@index([status, createdAt])
+  @@index([vehicleId, createdAt])
+  @@index([email, createdAt])
 }
 
 model AuditLog {

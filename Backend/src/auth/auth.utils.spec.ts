@@ -1,29 +1,37 @@
 import {
   assertPasswordIsNotCommon,
-  createOpaqueToken,
-  hashOpaqueToken,
+  createOtpCode,
+  hashOtpCode,
   normalizeEmail,
+  normalizeOtpCode,
 } from './auth.utils';
+import { TokenType } from '@prisma/client';
 
 describe('auth utilities', () => {
   it('normalizes an email address', () => {
     expect(normalizeEmail('  USER@NovaVolt.CA ')).toBe('user@novavolt.ca');
   });
 
-  it('creates high-entropy, distinct opaque tokens', () => {
-    const first = createOpaqueToken();
-    const second = createOpaqueToken();
-    expect(first).toHaveLength(43);
-    expect(second).toHaveLength(43);
+  it('creates distinct 6-digit otp codes', () => {
+    const first = createOtpCode();
+    const second = createOtpCode();
+    expect(first).toMatch(/^\d{6}$/);
+    expect(second).toMatch(/^\d{6}$/);
     expect(first).not.toBe(second);
   });
 
-  it('hashes opaque tokens deterministically without retaining the token', () => {
-    const token = 'a'.repeat(43);
-    const hash = hashOpaqueToken(token);
+  it('normalizes otp codes by removing non-digits', () => {
+    expect(normalizeOtpCode(' 12 34-56 ')).toBe('123456');
+  });
+
+  it('hashes otp codes deterministically without retaining the code', () => {
+    const code = '123456';
+    const hash = hashOtpCode('user-1', TokenType.EMAIL_VERIFICATION, code);
     expect(hash).toHaveLength(64);
-    expect(hash).toBe(hashOpaqueToken(token));
-    expect(hash).not.toContain(token);
+    expect(hash).toBe(
+      hashOtpCode('user-1', TokenType.EMAIL_VERIFICATION, code),
+    );
+    expect(hash).not.toContain(code);
   });
 
   it('rejects a common password', () => {

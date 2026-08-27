@@ -22,9 +22,10 @@ import {
 } from './dto';
 import {
   assertPasswordIsNotCommon,
-  createOpaqueToken,
-  hashOpaqueToken,
+  createOtpCode,
+  hashOtpCode,
   normalizeEmail,
+  normalizeOtpCode,
 } from './auth.utils';
 
 type SafeUser = Pick<User, 'id' | 'email' | 'role' | 'status'>;
@@ -56,12 +57,8 @@ export class AuthService {
     }
 
     const passwordHash = await argon2.hash(dto.password, this.argonOptions());
-    const requireVerification = this.config.get<boolean>(
-      'REQUIRE_EMAIL_VERIFICATION',
-      false,
-    );
-    const token = createOpaqueToken();
-    const expiresAt = new Date(Date.now() + 30 * 60_000);
+    const verificationCode = createOtpCode();
+    const expiresAt = new Date(Date.now() + 10 * 60_000);
 
     let user: SafeUser;
     try {
@@ -70,10 +67,8 @@ export class AuthService {
           data: {
             email,
             passwordHash,
-            status: requireVerification
-              ? UserStatus.PENDING
-              : UserStatus.ACTIVE,
-            emailVerifiedAt: requireVerification ? null : new Date(),
+            status: UserStatus.PENDING,
+            emailVerifiedAt: null,
             profile: {
               create: {
                 firstName: dto.firstName,
@@ -84,16 +79,18 @@ export class AuthService {
           select: { id: true, email: true, role: true, status: true },
         });
 
-        if (requireVerification) {
-          await transaction.oneTimeToken.create({
-            data: {
-              userId: created.id,
-              type: TokenType.EMAIL_VERIFICATION,
-              tokenHash: hashOpaqueToken(token),
-              expiresAt,
-            },
-          });
-        }
+        await transaction.oneTimeToken.create({
+          data: {
+            userId: created.id,
+            type: TokenType.EMAIL_VERIFICATION,
+            tokenHash: hashOtpCode(
+              created.id,
+              TokenType.EMAIL_VERIFICATION,
+              verificationCode,
+            ),
+            expiresAt,
+          },
+        });
         return created;
       });
     } catch (error) {
@@ -106,16 +103,12 @@ export class AuthService {
       throw error;
     }
 
-    if (requireVerification) {
-      await this.queueVerification(user, token);
-      return {
-        user,
-        verificationRequired: true,
-        ...this.developmentToken('verificationToken', token),
-      };
-    }
-
-    return this.createAuthenticatedSession(user, context);
+    await this.queueVerification(user, verificationCode);
+    return {
+      user,
+      verificationRequired: true,
+      ...this.developmentToken('verificationCode', verificationCode),
+    };
   }
 
   async login(dto: LoginDto, context: RequestContext = {}) {
@@ -136,7 +129,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid email or password');
     }
     if (user.status !== UserStatus.ACTIVE) {
-      throw new UnauthorizedException('Invalid email or password');
+      throw new UnauthorizedException('Email not verified');
     }
 
     await this.db.user.update({
@@ -246,7 +239,7 @@ export class AuthService {
     return { ok: true, revokedSessions: result.count };
   }
 
-  listSessions(userId: string) {
+  listSessions(userId: string, currentSessionId: string) {
     return this.db.session.findMany({
       where: { userId, revokedAt: null, expiresAt: { gt: new Date() } },
       select: {
@@ -258,10 +251,13 @@ export class AuthService {
         expiresAt: true,
       },
       orderBy: { lastUsedAt: 'desc' },
-    });
+    }).then((sessions) => sessions.map((session) => ({ ...session, current: session.id === currentSessionId })));
   }
 
-  async revokeSession(userId: string, sessionId: string) {
+  async revokeSession(userId: string, sessionId: string, currentSessionId: string) {
+    if (sessionId === currentSessionId) {
+      throw new BadRequestException('Use logout to end the current session');
+    }
     const result = await this.db.session.updateMany({
       where: { id: sessionId, userId, revokedAt: null },
       data: { revokedAt: new Date(), revokedReason: 'user_revoked' },
@@ -305,24 +301,32 @@ export class AuthService {
     const email = normalizeEmail(emailInput);
     const user = await this.db.user.findUnique({ where: { email } });
     if (user && user.status === UserStatus.PENDING && !user.emailVerifiedAt) {
-      const token = await this.replaceOneTimeToken(
+      const code = await this.replaceOneTimeToken(
         user.id,
         TokenType.EMAIL_VERIFICATION,
-        30,
+        10,
       );
-      await this.queueVerification(user, token);
+      await this.queueVerification(user, code);
       return {
         accepted: true,
-        ...this.developmentToken('verificationToken', token),
+        ...this.developmentToken('verificationCode', code),
       };
     }
     return { accepted: true };
   }
 
-  async verifyEmail(token: string) {
-    const tokenHash = hashOpaqueToken(token);
+  async verifyEmail(dto: { email: string; code: string }) {
+    const email = normalizeEmail(dto.email);
+    const code = normalizeOtpCode(dto.code);
+    const user = await this.db.user.findUnique({ where: { email } });
+    if (!user || user.status === UserStatus.DISABLED) {
+      throw new BadRequestException('Verification code is invalid or expired');
+    }
+
     const record = await this.db.oneTimeToken.findUnique({
-      where: { tokenHash },
+      where: {
+        tokenHash: hashOtpCode(user.id, TokenType.EMAIL_VERIFICATION, code),
+      },
     });
     if (
       !record ||
@@ -330,7 +334,7 @@ export class AuthService {
       record.usedAt ||
       record.expiresAt <= new Date()
     ) {
-      throw new BadRequestException('Verification token is invalid or expired');
+      throw new BadRequestException('Verification code is invalid or expired');
     }
 
     await this.db.$transaction(async (transaction) => {
@@ -339,7 +343,7 @@ export class AuthService {
         data: { usedAt: new Date() },
       });
       if (consumed.count !== 1) {
-        throw new BadRequestException('Verification token is invalid or expired');
+        throw new BadRequestException('Verification code is invalid or expired');
       }
       await transaction.user.update({
         where: { id: record.userId },
@@ -353,10 +357,10 @@ export class AuthService {
     const email = normalizeEmail(emailInput);
     const user = await this.db.user.findUnique({ where: { email } });
     if (user && user.status !== UserStatus.DISABLED) {
-      const token = await this.replaceOneTimeToken(
+      const code = await this.replaceOneTimeToken(
         user.id,
         TokenType.PASSWORD_RESET,
-        20,
+        10,
       );
       await this.notifications.queue(
         user.id,
@@ -364,13 +368,13 @@ export class AuthService {
         'PASSWORD_RESET',
         user.email,
         {
-          url: `${this.config.get<string>('APP_URL', 'http://localhost:3000')}/reset-password?token=${token}`,
-          expiresInMinutes: 20,
+          code,
+          expiresInMinutes: 10,
         },
       );
       return {
         accepted: true,
-        ...this.developmentToken('resetToken', token),
+        ...this.developmentToken('resetCode', code),
       };
     }
     return { accepted: true };
@@ -383,8 +387,17 @@ export class AuthService {
       throw new BadRequestException('Password is too common');
     }
 
+    const email = normalizeEmail(dto.email);
+    const code = normalizeOtpCode(dto.code);
+    const user = await this.db.user.findUnique({ where: { email } });
+    if (!user || user.status === UserStatus.DISABLED) {
+      throw new BadRequestException('Reset code is invalid or expired');
+    }
+
     const record = await this.db.oneTimeToken.findUnique({
-      where: { tokenHash: hashOpaqueToken(dto.token) },
+      where: {
+        tokenHash: hashOtpCode(user.id, TokenType.PASSWORD_RESET, code),
+      },
     });
     if (
       !record ||
@@ -392,7 +405,7 @@ export class AuthService {
       record.usedAt ||
       record.expiresAt <= new Date()
     ) {
-      throw new BadRequestException('Reset token is invalid or expired');
+      throw new BadRequestException('Reset code is invalid or expired');
     }
 
     const passwordHash = await argon2.hash(
@@ -405,7 +418,7 @@ export class AuthService {
         data: { usedAt: new Date() },
       });
       if (consumed.count !== 1) {
-        throw new BadRequestException('Reset token is invalid or expired');
+        throw new BadRequestException('Reset code is invalid or expired');
       }
       await transaction.user.update({
         where: { id: record.userId },
@@ -460,6 +473,16 @@ export class AuthService {
           this.argonOptions(),
         ),
       },
+    });
+    await this.notifications.queue(
+      user.id,
+      'EMAIL',
+      'NEW_LOGIN',
+      this.config.getOrThrow<string>('ADMIN_EMAIL'),
+      {
+      device: context.userAgent ?? 'Unknown device',
+      ipAddress: context.ipAddress ?? 'Unknown location',
+      createdAt: new Date().toISOString(),
     });
     return { user: this.safeUser(user), ...tokens };
   }
@@ -556,37 +579,37 @@ export class AuthService {
     type: TokenType,
     expiresInMinutes: number,
   ): Promise<string> {
-    const token = createOpaqueToken();
+    const code = createOtpCode();
     await this.db.$transaction([
       this.db.oneTimeToken.deleteMany({ where: { userId, type, usedAt: null } }),
       this.db.oneTimeToken.create({
         data: {
           userId,
           type,
-          tokenHash: hashOpaqueToken(token),
+          tokenHash: hashOtpCode(userId, type, code),
           expiresAt: new Date(Date.now() + expiresInMinutes * 60_000),
         },
       }),
     ]);
-    return token;
+    return code;
   }
 
-  private queueVerification(user: SafeUser, token: string) {
+  private queueVerification(user: SafeUser, code: string) {
     return this.notifications.queue(
       user.id,
       'EMAIL',
       'EMAIL_VERIFICATION',
       user.email,
       {
-        url: `${this.config.get<string>('APP_URL', 'http://localhost:3000')}/verify-email?token=${token}`,
-        expiresInMinutes: 30,
+        code,
+        expiresInMinutes: 10,
       },
     );
   }
 
-  private developmentToken(key: string, token: string): Record<string, string> {
+  private developmentToken(key: string, code: string): Record<string, string> {
     return this.config.get<boolean>('EXPOSE_DEVELOPMENT_TOKENS', false)
-      ? { [key]: token }
+      ? { [key]: code }
       : {};
   }
 

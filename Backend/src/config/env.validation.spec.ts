@@ -2,10 +2,19 @@ import { validateEnvironment } from './env.validation';
 
 const base = {
   NODE_ENV: 'development',
-  DATABASE_URL: 'postgresql://user:pass@localhost:5432/novavolt',
+  DATABASE_URL: 'postgresql://user:pass@neon.example.com:5432/novavolt',
+  DIRECT_URL: 'postgresql://user:pass@neon.example.com:5432/novavolt',
   JWT_ACCESS_SECRET: 'a'.repeat(64),
   JWT_REFRESH_SECRET: 'b'.repeat(64),
   CORS_ORIGINS: 'http://localhost:3000',
+  IMAGEKIT_PUBLIC_KEY: 'public_5msQhUtDlCR6lSYWUVSxs5HDVuA=',
+  IMAGEKIT_PRIVATE_KEY: 'private_0EjJMYYdk0OZ/q5w2zvUbemgd6g=',
+  IMAGEKIT_URL_ENDPOINT: 'https://ik.imagekit.io/p4swwhwet',
+  IMAGEKIT_VEHICLES_FOLDER: 'vehicle',
+  DEFAULT_ADMIN_EMAIL: 'admin@novavolt.local',
+  DEFAULT_ADMIN_PASSWORD: 'ChangeThisDefaultAdminPass1!',
+  DEFAULT_ADMIN_FIRST_NAME: 'Admin',
+  DEFAULT_ADMIN_LAST_NAME: 'Novavolt',
 };
 
 describe('environment validation', () => {
@@ -22,10 +31,15 @@ describe('environment validation', () => {
     ).toThrow('must be different');
   });
 
-  it('rejects wildcard CORS', () => {
-    expect(() => validateEnvironment({ ...base, CORS_ORIGINS: '*' })).toThrow(
-      'cannot contain a wildcard',
-    );
+  it('allows wildcard CORS in development', () => {
+    const result = validateEnvironment({ ...base, CORS_ORIGINS: '*' });
+    expect(result.CORS_ORIGINS).toBe('*');
+  });
+
+  it('rejects wildcard CORS in production', () => {
+    expect(() =>
+      validateEnvironment({ ...base, NODE_ENV: 'production', CORS_ORIGINS: '*' }),
+    ).toThrow('cannot contain a wildcard');
   });
 
   it('requires HTTPS origins in production', () => {
@@ -75,6 +89,15 @@ describe('environment validation', () => {
         CORS_ORIGINS: 'https://novavolt.ca',
       }),
     ).toThrow('NOTIFICATIONS_ENABLED is required');
+  });
+
+  it('requires valid ImageKit credentials', () => {
+    expect(() =>
+      validateEnvironment({
+        ...base,
+        IMAGEKIT_PUBLIC_KEY: 'invalid',
+      }),
+    ).toThrow('must start with public_');
   });
 
   it('requires a 256-bit notification payload encryption key', () => {

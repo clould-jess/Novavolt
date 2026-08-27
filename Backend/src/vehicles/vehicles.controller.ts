@@ -19,6 +19,7 @@ import { RolesGuard } from '../common/guards/roles.guard';
 import { AuthUser, RequestContext } from '../common/types/auth-user';
 import {
   CreateVehiclePhotoUploadDto,
+  CompleteVehiclePhotoUploadDto,
   CreateVehicleDto,
   StaffVehicleQueryDto,
   UpdateVehicleDto,
@@ -103,15 +104,11 @@ export class VehiclesController {
   completePhoto(
     @Param('vehicleId') vehicleId: string,
     @Param('photoId') photoId: string,
+    @Body() dto: CompleteVehiclePhotoUploadDto,
     @CurrentUser() user: AuthUser,
     @CurrentRequestContext() context: RequestContext,
   ) {
-    return this.vehicles.completePhotoUpload(
-      vehicleId,
-      photoId,
-      user,
-      context,
-    );
+    return this.vehicles.completePhotoUpload(vehicleId, photoId, dto, user, context);
   }
 
   @Get(':vehicleId/photos/:photoId')

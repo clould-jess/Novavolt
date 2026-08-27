@@ -186,7 +186,7 @@ export function Navbar() {
               'nv-link hidden items-center gap-1.5 text-2xs font-semibold xl:inline-flex',
               transparent ? 'text-white/90 hover:text-white' : 'text-ink/75 hover:text-ink'
             )}
-          >
+            >
             <PhoneIcon className="h-3.5 w-3.5" aria-hidden="true" />
             {t('common.phone')}
           </a>
@@ -300,9 +300,6 @@ export function Navbar() {
                   <PhoneIcon className="h-4 w-4" aria-hidden="true" />
                   {t('common.phone')}
                 </a>
-                <Link to="/connexion" className="text-center text-2xs font-semibold text-muted hover:text-ink">
-                  {t('nav.signIn')}
-                </Link>
               </div>
             </nav>
           </motion.div>

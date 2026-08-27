@@ -28,7 +28,7 @@ export function AuthLayout({ title, subtitle, children, footer }: AuthLayoutProp
           aria-hidden="true" />
         
         <div className="relative flex h-full flex-col justify-between p-10">
-          <Logo tone="light" />
+          <Logo transparent />
           <div>
             <h2 className="max-w-sm font-display text-3xl font-bold leading-tight tracking-[-0.03em] text-white">
               {t('auth.visualTitle')}
@@ -46,7 +46,7 @@ export function AuthLayout({ title, subtitle, children, footer }: AuthLayoutProp
       <main className="flex flex-1 flex-col px-4 py-6 sm:px-8 lg:px-12">
         <div className="flex items-center justify-between gap-4">
           <div className="lg:hidden">
-            <Logo />
+            <Logo transparent />
           </div>
           <Link
             to="/"

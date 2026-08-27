@@ -9,16 +9,17 @@ import { MalwareScanStatus, Prisma, VehicleStatus } from '@prisma/client';
 import { createHmac, randomUUID, timingSafeEqual } from 'crypto';
 import { AuditService } from '../audit/audit.service';
 import { AuthUser, RequestContext } from '../common/types/auth-user';
-import { DocumentStorageService } from '../documents/document-storage.service';
 import { MalwareScanResult } from '../documents/dto';
 import { PrismaService } from '../prisma.service';
 import {
+  CompleteVehiclePhotoUploadDto,
   CreateVehiclePhotoUploadDto,
   CreateVehicleDto,
   StaffVehicleQueryDto,
   UpdateVehicleDto,
   VehicleQueryDto,
 } from './dto';
+import { VehicleImageKitService } from './vehicle-imagekit.service';
 
 const publicVehicleSelect = {
   id: true,
@@ -26,6 +27,10 @@ const publicVehicleSelect = {
   model: true,
   year: true,
   color: true,
+  city: true,
+  seats: true,
+  rangeKm: true,
+  description: true,
   powertrain: true,
   weeklyRateCents: true,
   currency: true,
@@ -35,7 +40,15 @@ const publicVehicleSelect = {
       uploadedAt: { not: null },
       malwareScanStatus: MalwareScanStatus.CLEAN,
     },
-    select: { id: true, altText: true, sortOrder: true },
+    select: {
+      id: true,
+      altText: true,
+      sortOrder: true,
+      uploadedAt: true,
+      malwareScanStatus: true,
+      imagekitUrl: true,
+      imagekitThumbnailUrl: true,
+    },
     orderBy: { sortOrder: 'asc' },
   },
 } satisfies Prisma.VehicleSelect;
@@ -45,7 +58,7 @@ export class VehiclesService {
   constructor(
     private readonly db: PrismaService,
     private readonly audit: AuditService,
-    private readonly storage: DocumentStorageService,
+    private readonly imageKit: VehicleImageKitService,
     private readonly config: ConfigService,
   ) {}
 
@@ -131,10 +144,7 @@ export class VehiclesService {
   ) {
     return this.db.$transaction(async (transaction) => {
       const current = await transaction.vehicle.findUniqueOrThrow({ where: { id } });
-      if (
-        dto.odometer !== undefined &&
-        dto.odometer < current.odometer
-      ) {
+      if (dto.odometer !== undefined && dto.odometer < current.odometer) {
         throw new BadRequestException('Odometer cannot decrease');
       }
       const vehicle = await transaction.vehicle.update({
@@ -162,20 +172,14 @@ export class VehiclesService {
     actor: AuthUser,
     context: RequestContext,
   ) {
-    if (
-      status === VehicleStatus.RENTED ||
-      status === VehicleStatus.RESERVED
-    ) {
+    if (status === VehicleStatus.RENTED || status === VehicleStatus.RESERVED) {
       throw new BadRequestException(
         'RENTED and RESERVED statuses are controlled by booking and rental workflows',
       );
     }
     return this.db.$transaction(async (transaction) => {
       const current = await transaction.vehicle.findUniqueOrThrow({ where: { id } });
-      if (
-        current.status === VehicleStatus.RENTED &&
-        status !== VehicleStatus.MAINTENANCE
-      ) {
+      if (current.status === VehicleStatus.RENTED && status !== VehicleStatus.MAINTENANCE) {
         throw new BadRequestException('Complete the active rental first');
       }
       const vehicle = await transaction.vehicle.update({
@@ -203,21 +207,20 @@ export class VehiclesService {
     actor: AuthUser,
     context: RequestContext,
   ) {
-    this.storage.assertEnabled();
     await this.db.vehicle.findUniqueOrThrow({ where: { id: vehicleId } });
+    const existingPhotos = await this.db.vehiclePhoto.count({ where: { vehicleId } });
+    if (existingPhotos >= 5) {
+      throw new BadRequestException('A vehicle can have at most 5 photos');
+    }
+    const photoId = randomUUID();
     const mimeType = dto.mimeType.toLowerCase();
-    const extension =
-      mimeType === 'image/jpeg'
-        ? 'jpg'
-        : mimeType === 'image/png'
-          ? 'png'
-          : 'webp';
-    const storageKey = `vehicle-photos/${vehicleId}/${randomUUID()}.${extension}`;
+    const fileName = this.imageKit.buildFileName(vehicleId, photoId, mimeType);
     const photo = await this.db.$transaction(async (transaction) => {
       const created = await transaction.vehiclePhoto.create({
         data: {
+          id: photoId,
           vehicleId,
-          storageKey,
+          storageKey: `${vehicleId}/${photoId}`,
           mimeType,
           sizeBytes: dto.sizeBytes,
           altText: dto.altText,
@@ -237,31 +240,26 @@ export class VehiclesService {
       );
       return created;
     });
-    try {
-      return {
-        photoId: photo.id,
-        uploadUrl: await this.storage.createUploadUrl(
-          photo.storageKey,
-          photo.mimeType,
-          photo.sizeBytes,
-          photo.id,
-        ),
-        expiresInSeconds: 600,
-        requiredHeaders: {
-          'content-type': photo.mimeType,
-          'content-length': photo.sizeBytes,
-          'x-amz-server-side-encryption': 'AES256',
-        },
-      };
-    } catch (error) {
-      await this.db.vehiclePhoto.delete({ where: { id: photo.id } });
-      throw error;
-    }
+
+    const upload = this.imageKit.getUploadAuth();
+    return {
+      photoId: photo.id,
+      uploadUrl: upload.uploadUrl,
+      publicKey: upload.publicKey,
+      token: upload.token,
+      expire: upload.expire,
+      signature: upload.signature,
+      folder: upload.folder,
+      fileName,
+      urlEndpoint: upload.urlEndpoint,
+      expiresInSeconds: upload.expiresInSeconds,
+    };
   }
 
   async completePhotoUpload(
     vehicleId: string,
     photoId: string,
+    dto: CompleteVehiclePhotoUploadDto,
     actor: AuthUser,
     context: RequestContext,
   ) {
@@ -271,19 +269,23 @@ export class VehiclesService {
     if (photo.uploadedAt) {
       throw new BadRequestException('Vehicle photo upload is already finalized');
     }
-    const object = await this.storage.head(photo.storageKey);
-    if (
-      object.ContentLength !== photo.sizeBytes ||
-      object.ContentType?.toLowerCase() !== photo.mimeType
-    ) {
-      await this.storage.remove(photo.storageKey).catch(() => undefined);
-      await this.db.vehiclePhoto.delete({ where: { id: photo.id } });
-      throw new BadRequestException('Uploaded vehicle photo metadata does not match');
+    const expectedFileName = this.imageKit.buildFileName(
+      vehicleId,
+      photo.id,
+      photo.mimeType,
+    );
+    if (!dto.imagekitFilePath.endsWith(`/${expectedFileName}`)) {
+      await this.imageKit.deleteFile(dto.imagekitFileId).catch(() => undefined);
+      throw new BadRequestException('Uploaded vehicle photo does not match the expected ImageKit file name');
     }
-    return this.db.$transaction(async (transaction) => {
-      const updated = await transaction.vehiclePhoto.update({
+    const updated = await this.db.$transaction(async (transaction) => {
+      const result = await transaction.vehiclePhoto.update({
         where: { id: photo.id },
         data: {
+          imagekitFileId: dto.imagekitFileId,
+          imagekitFilePath: dto.imagekitFilePath,
+          imagekitUrl: dto.imagekitUrl,
+          imagekitThumbnailUrl: dto.imagekitThumbnailUrl ?? dto.imagekitUrl,
           uploadedAt: new Date(),
           malwareScanStatus: this.config.get<boolean>(
             'MALWARE_SCAN_REQUIRED',
@@ -299,13 +301,18 @@ export class VehiclesService {
           action: 'vehicle_photo.upload_completed',
           entityType: 'VehiclePhoto',
           entityId: photo.id,
-          metadata: { vehicleId },
+          metadata: {
+            vehicleId,
+            fileId: dto.imagekitFileId,
+            filePath: dto.imagekitFilePath,
+          },
           context,
         },
         transaction,
       );
-      return updated;
+      return result;
     });
+    return updated;
   }
 
   async photoDownload(vehicleId: string, photoId: string) {
@@ -316,11 +323,22 @@ export class VehiclesService {
         uploadedAt: { not: null },
         malwareScanStatus: MalwareScanStatus.CLEAN,
       },
-      select: { storageKey: true },
+      select: {
+        imagekitUrl: true,
+        imagekitThumbnailUrl: true,
+        imagekitFilePath: true,
+      },
     });
+    if (!photo.imagekitUrl && !photo.imagekitFilePath) {
+      throw new BadRequestException('Vehicle photo is missing delivery metadata');
+    }
+    const url =
+      photo.imagekitUrl ??
+      this.imageKit.buildDeliveryUrl(photo.imagekitFilePath ?? '');
     return {
-      url: await this.storage.createDownloadUrl(photo.storageKey),
-      expiresInSeconds: 300,
+      url,
+      thumbnailUrl: photo.imagekitThumbnailUrl ?? url,
+      expiresInSeconds: 0,
     };
   }
 
@@ -333,7 +351,9 @@ export class VehiclesService {
     const photo = await this.db.vehiclePhoto.findFirstOrThrow({
       where: { id: photoId, vehicleId },
     });
-    await this.storage.remove(photo.storageKey).catch(() => undefined);
+    if (photo.imagekitFileId) {
+      await this.imageKit.deleteFile(photo.imagekitFileId).catch(() => undefined);
+    }
     await this.db.$transaction(async (transaction) => {
       await transaction.vehiclePhoto.delete({ where: { id: photo.id } });
       await this.audit.write(
@@ -342,7 +362,7 @@ export class VehiclesService {
           action: 'vehicle_photo.deleted',
           entityType: 'VehiclePhoto',
           entityId: photo.id,
-          metadata: { vehicleId },
+          metadata: { vehicleId, fileId: photo.imagekitFileId },
           context,
         },
         transaction,
@@ -383,8 +403,8 @@ export class VehiclesService {
       );
       return updated;
     });
-    if (status === MalwareScanResult.INFECTED) {
-      await this.storage.remove(photo.storageKey).catch(() => undefined);
+    if (status === MalwareScanResult.INFECTED && photo.imagekitFileId) {
+      await this.imageKit.deleteFile(photo.imagekitFileId).catch(() => undefined);
     }
     return { accepted: true };
   }

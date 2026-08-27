@@ -1,9 +1,11 @@
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { useEffect } from 'react';
+import { BrowserRouter, Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 import { I18nProvider } from './contexts/I18nContext';
 import { ToastProvider } from './contexts/ToastContext';
 import { MarketingLayout } from './components/marketing/MarketingLayout';
 import { PortalLayout } from './components/portal/PortalLayout';
 import { AdminLayout } from './components/admin/AdminLayout';
+import { AdminAccessGate } from './components/admin/AdminAccessGate';
 import { Home } from './pages/Home';
 import { Vehicles } from './pages/Vehicles';
 import { VehicleDetail } from './pages/VehicleDetail';
@@ -34,23 +36,53 @@ import { PortalIncident } from './pages/portal/Incident';
 import { PortalSupport } from './pages/portal/Support';
 import { PortalProfile } from './pages/portal/Profile';
 import { AdminDashboard } from './pages/admin/Dashboard';
+import { AdminDossiers } from './pages/admin/Dossiers';
+import { AdminReservations } from './pages/admin/Reservations';
+import { AdminVehicles } from './pages/admin/Vehicles';
+import { AdminVehicleWizardPage } from './pages/admin/VehicleWizardPage';
 import { AdminComingSoon } from './pages/admin/ComingSoon';
+import { AdminNotifications } from './pages/admin/Notifications';
+import { SecurityActivity } from './pages/admin/SecurityActivity';
 
 import { Fleet } from './pages/Fleet';
 import { Blog } from './pages/Blog';
 import { BlogPostDetail } from './pages/BlogPostDetail';
+import { clearAuthSession } from './services/auth';
+import { useToast } from './contexts/ToastContext';
 
 /**
  * Control visibility of login, customer portal, and admin dashboard.
  * Set to `true` when internal portal and authentication features are ready for public release.
  */
-const ENABLE_INTERNAL_ROUTES = false;
+const ENABLE_INTERNAL_ROUTES = true;
+
+function SessionExpiryHandler() {
+  const navigate = useNavigate();
+  const { showToast } = useToast();
+
+  useEffect(() => {
+    const handleSessionExpiry = () => {
+      clearAuthSession();
+      showToast({
+        tone: 'warn',
+        title: 'Votre session a expir\u00e9e pour votre s\u00e9curit\u00e9. Veuillez vous reconnecter.',
+      });
+      navigate('/connexion', { replace: true });
+    };
+
+    window.addEventListener('novavolt:session-expired', handleSessionExpiry);
+    return () => window.removeEventListener('novavolt:session-expired', handleSessionExpiry);
+  }, [navigate, showToast]);
+
+  return null;
+}
 
 export function App() {
   return (
     <I18nProvider>
       <ToastProvider>
         <BrowserRouter>
+          <SessionExpiryHandler />
           <Routes>
             {/* Public marketing site */}
             <Route element={<MarketingLayout />}>
@@ -98,21 +130,27 @@ export function App() {
                 </Route>
 
                 {/* Administration */}
-                <Route path="/admin" element={<AdminLayout />}>
-                  <Route index element={<AdminDashboard />} />
-                  <Route path="clients" element={<AdminComingSoon />} />
-                  <Route path="dossiers" element={<AdminComingSoon />} />
-                  <Route path="vehicules" element={<AdminComingSoon />} />
-                  <Route path="calendrier" element={<AdminComingSoon />} />
-                  <Route path="reservations" element={<AdminComingSoon />} />
-                  <Route path="locations" element={<AdminComingSoon />} />
-                  <Route path="contrats" element={<AdminComingSoon />} />
-                  <Route path="paiements" element={<AdminComingSoon />} />
-                  <Route path="depots" element={<AdminComingSoon />} />
-                  <Route path="maintenance" element={<AdminComingSoon />} />
-                  <Route path="incidents" element={<AdminComingSoon />} />
-                  <Route path="rapports" element={<AdminComingSoon />} />
-                  <Route path="parametres" element={<AdminComingSoon />} />
+                <Route element={<AdminAccessGate />}>
+                  <Route path="/admin" element={<AdminLayout />}>
+                    <Route index element={<AdminDashboard />} />
+                    <Route path="notifications" element={<AdminNotifications />} />
+                    <Route path="security" element={<SecurityActivity />} />
+                    <Route path="clients" element={<AdminComingSoon />} />
+                    <Route path="dossiers" element={<AdminDossiers />} />
+                    <Route path="vehicules" element={<AdminVehicles />} />
+                    <Route path="vehicules/nouveau" element={<AdminVehicleWizardPage />} />
+                    <Route path="vehicules/:id/modifier" element={<AdminVehicleWizardPage />} />
+                    <Route path="calendrier" element={<AdminComingSoon />} />
+                    <Route path="reservations" element={<AdminReservations />} />
+                    <Route path="locations" element={<AdminComingSoon />} />
+                    <Route path="contrats" element={<AdminComingSoon />} />
+                    <Route path="paiements" element={<AdminComingSoon />} />
+                    <Route path="depots" element={<AdminComingSoon />} />
+                    <Route path="maintenance" element={<AdminComingSoon />} />
+                    <Route path="incidents" element={<AdminComingSoon />} />
+                    <Route path="rapports" element={<AdminComingSoon />} />
+                    <Route path="parametres" element={<AdminComingSoon />} />
+                  </Route>
                 </Route>
               </>
             )}

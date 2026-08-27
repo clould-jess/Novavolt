@@ -22,7 +22,7 @@ export function ToastProvider({ children }: {children: React.ReactNode;}) {
     ({ tone, title, body }) => {
       const id = `toast-${Date.now()}-${Math.random().toString(16).slice(2)}`;
       setToasts((current) => [...current.slice(-2), { id, tone, title, body }]);
-      window.setTimeout(() => dismiss(id), 4500);
+      window.setTimeout(() => dismiss(id), 5000);
     },
     [dismiss]
   );

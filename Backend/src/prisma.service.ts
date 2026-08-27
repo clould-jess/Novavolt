@@ -1,13 +1,22 @@
-import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
+import { PrismaNeon } from '@prisma/adapter-neon';
 
 @Injectable()
 export class PrismaService
   extends PrismaClient
   implements OnModuleInit, OnModuleDestroy
 {
+  private readonly logger = new Logger(PrismaService.name);
+
   constructor() {
+    const databaseUrl = process.env.DATABASE_URL?.trim();
+    if (!databaseUrl) {
+      throw new Error('DATABASE_URL is required');
+    }
+
     super({
+      adapter: new PrismaNeon({ connectionString: databaseUrl }),
       log:
         process.env.NODE_ENV === 'development'
           ? ['warn', 'error']
@@ -20,7 +29,19 @@ export class PrismaService
   }
 
   async onModuleInit(): Promise<void> {
-    await this.$connect();
+    try {
+      await this.$connect();
+    } catch (error) {
+      if (process.env.NODE_ENV === 'production') {
+        throw error;
+      }
+
+      const message =
+        error instanceof Error ? error.message : 'Unknown Prisma connection error';
+      this.logger.warn(
+        `Prisma connection skipped during startup: ${message}`,
+      );
+    }
   }
 
   async onModuleDestroy(): Promise<void> {

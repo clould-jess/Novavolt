@@ -8,6 +8,7 @@ interface LogoProps {
   to?: string;
   compact?: boolean;
   transparent?: boolean;
+  variant?: 'default' | 'transparent' | 'footer';
 }
 
 /**
@@ -17,8 +18,22 @@ interface LogoProps {
  * This viewport crops that space visually while keeping the source files
  * untouched and the logo legible in every layout.
  */
-export function Logo({ className, to = '/', compact = false, transparent = false }: LogoProps) {
+export function Logo({
+  className,
+  to = '/',
+  compact = false,
+  transparent = false,
+  variant,
+}: LogoProps) {
   const { t } = useI18n();
+  const src =
+    variant === 'footer'
+      ? '/logo_foot.png'
+      : transparent
+        ? '/logo2.png'
+        : '/logo.jpeg';
+  const width = variant === 'footer' ? 512 : transparent ? 512 : 1254;
+  const height = width;
 
   return (
     <Link
@@ -36,10 +51,10 @@ export function Logo({ className, to = '/', compact = false, transparent = false
         )}
       >
         <img
-          src={transparent ? '/logo2.png' : '/logo.jpeg'}
+          src={src}
           alt={t('common.logoAlt')}
-          width={transparent ? 512 : 1254}
-          height={transparent ? 512 : 1254}
+          width={width}
+          height={height}
           className="absolute left-0 top-1/2 h-auto w-full -translate-y-1/2 select-none object-contain"
           draggable={false}
         />

@@ -1,4 +1,5 @@
-import { createHash, randomBytes } from 'crypto';
+import { TokenType } from '@prisma/client';
+import { createHash, randomInt } from 'crypto';
 
 const commonPasswords = new Set([
   'password123!',
@@ -18,10 +19,16 @@ export function assertPasswordIsNotCommon(password: string): void {
   }
 }
 
-export function createOpaqueToken(): string {
-  return randomBytes(32).toString('base64url');
+export function createOtpCode(): string {
+  return randomInt(0, 1_000_000).toString().padStart(6, '0');
 }
 
-export function hashOpaqueToken(token: string): string {
-  return createHash('sha256').update(token, 'utf8').digest('hex');
+export function normalizeOtpCode(code: string): string {
+  return code.trim().replace(/\D/g, '');
+}
+
+export function hashOtpCode(userId: string, type: TokenType, code: string): string {
+  return createHash('sha256')
+    .update(`${userId}:${type}:${normalizeOtpCode(code)}`, 'utf8')
+    .digest('hex');
 }

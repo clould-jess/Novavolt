@@ -1,5 +1,6 @@
+import { motion } from 'framer-motion';
 import React, { useState } from 'react';
-import { ClockIcon, MailIcon, MapPinIcon, PhoneIcon } from 'lucide-react';
+import { CheckCircle2Icon, ClockIcon, MailIcon, MapPinIcon, PhoneIcon } from 'lucide-react';
 import { useI18n } from '../contexts/I18nContext';
 import { useToast } from '../contexts/ToastContext';
 import { mockFaq } from '../data/faq';
@@ -12,6 +13,7 @@ import { SectionTitle } from '../components/ui/SectionTitle';
 import { Select } from '../components/ui/Select';
 import { Textarea } from '../components/ui/Textarea';
 import { PageHero } from '../components/marketing/PageHero';
+import { createContactMessage } from '../services/contact';
 
 export function Contact() {
   const { t, locale } = useI18n();
@@ -23,6 +25,7 @@ export function Contact() {
   const [message, setMessage] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [sending, setSending] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
   const phoneHref = `tel:${t('common.phone').replace(/[^\d+]/g, '')}`;
   const quickFaq = mockFaq.filter((item) => ['faq-1', 'faq-19', 'faq-24'].includes(item.id));
@@ -37,14 +40,36 @@ export function Contact() {
     if (Object.keys(nextErrors).length > 0) return;
 
     setSending(true);
-    window.setTimeout(() => {
-      setSending(false);
-      setName('');
-      setEmail('');
-      setPhone('');
-      setMessage('');
-      showToast({ tone: 'success', title: t('contactPage.sent') });
-    }, 800);
+    createContactMessage({
+      name,
+      email,
+      phone,
+      subject: subject as 'driver' | 'individual' | 'support' | 'partner' | 'other',
+      message,
+    })
+      .then((response) => {
+        setName('');
+        setEmail('');
+        setPhone('');
+        setSubject('driver');
+        setMessage('');
+        setSubmitted(true);
+        showToast({
+          tone: response.emailDelivered ? 'success' : 'warn',
+          title: response.emailDelivered ? t('contactPage.sent') : t('fleetPage.pendingToastTitle'),
+          body: response.emailDelivered ? undefined : t('fleetPage.pendingToastBody'),
+        });
+      })
+      .catch(() => {
+        showToast({ tone: 'error', title: t('contactPage.error') });
+      })
+      .finally(() => {
+        setSending(false);
+      });
+  };
+
+  const handleNewRequest = () => {
+    setSubmitted(false);
   };
 
   return (
@@ -92,8 +117,35 @@ export function Contact() {
       <section className="bg-white px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
         <div className="mx-auto grid max-w-content gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
           <Card padding="lg" tone="white">
-            <SectionTitle as="h2" variant={0} title={t('contactPage.formTitle')} />
-            <form className="mt-8 flex flex-col gap-4" onSubmit={submit} noValidate>
+            {submitted ? (
+              <motion.div
+                initial={{ opacity: 0, y: 8, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.24, ease: 'easeOut' }}
+                className="flex min-h-[30rem] flex-col items-center justify-center rounded-3xl border border-emerald-200 bg-emerald-50 px-6 py-10 text-center"
+              >
+                <motion.div
+                  initial={{ scale: 0.7, rotate: -10 }}
+                  animate={{ scale: 1, rotate: 0 }}
+                  transition={{ type: 'spring', stiffness: 240, damping: 14 }}
+                  className="grid h-16 w-16 place-items-center rounded-full bg-emerald-100 text-emerald-600"
+                >
+                  <CheckCircle2Icon className="h-8 w-8" />
+                </motion.div>
+                <h2 className="mt-5 font-display text-2xl font-semibold tracking-[-0.02em] text-ink">
+                  {t('contactPage.sent')}
+                </h2>
+                <p className="mt-2 max-w-md text-sm leading-relaxed text-muted">
+                  {t('contactPage.successBody')}
+                </p>
+                <Button type="button" variant="secondary" className="mt-6" onClick={handleNewRequest}>
+                  {t('common.newRequest')}
+                </Button>
+              </motion.div>
+            ) : (
+              <>
+                <SectionTitle as="h2" variant={0} title={t('contactPage.formTitle')} />
+                <form className="mt-8 flex flex-col gap-4" onSubmit={submit} noValidate>
               <Input
                 id="contact-name"
                 label={t('contactPage.name')}
@@ -141,7 +193,9 @@ export function Contact() {
               <Button type="submit" size="lg" loading={sending} className="mt-2 self-start">
                 {t('contactPage.send')}
               </Button>
-            </form>
+                </form>
+              </>
+            )}
           </Card>
 
           <div className="flex flex-col gap-6">

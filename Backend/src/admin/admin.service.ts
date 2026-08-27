@@ -156,6 +156,18 @@ export class AdminService {
       const ownerCount = await transaction.user.count({
         where: { role: Role.OWNER, status: UserStatus.ACTIVE },
       });
+      if (dto.role === Role.ADMIN && current.role !== Role.ADMIN) {
+        const activeAdminCount = await transaction.user.count({
+          where: {
+            role: Role.ADMIN,
+            status: UserStatus.ACTIVE,
+            NOT: { id },
+          },
+        });
+        if (activeAdminCount > 0) {
+          throw new BadRequestException('Only one active admin account is allowed');
+        }
+      }
       if (
         current.role === Role.OWNER &&
         dto.role !== Role.OWNER &&

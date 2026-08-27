@@ -1,4 +1,10 @@
 const insecureSecretMarkers = ['replace', 'change_me', 'secret', 'password'];
+const defaultAdminConfig = {
+  email: 'admin@novavolt.local',
+  password: 'ChangeThisDefaultAdminPass1!',
+  firstName: 'Admin',
+  lastName: 'Novavolt',
+};
 
 function requireString(config: Record<string, unknown>, key: string): string {
   const value = String(config[key] ?? '').trim();
@@ -6,6 +12,12 @@ function requireString(config: Record<string, unknown>, key: string): string {
     throw new Error(`${key} is required`);
   }
   return value;
+}
+
+function assertPostgresUrl(value: string, key: string): void {
+  if (!value.startsWith('postgresql://') && !value.startsWith('postgres://')) {
+    throw new Error(`${key} must be a PostgreSQL connection URL`);
+  }
 }
 
 function positiveInteger(
@@ -56,9 +68,10 @@ export function validateEnvironment(
 
   const production = nodeEnv === 'production';
   const databaseUrl = requireString(config, 'DATABASE_URL');
-  if (!databaseUrl.startsWith('postgresql://') && !databaseUrl.startsWith('postgres://')) {
-    throw new Error('DATABASE_URL must be a PostgreSQL connection URL');
-  }
+  assertPostgresUrl(databaseUrl, 'DATABASE_URL');
+  const directUrl = requireString(config, 'DIRECT_URL');
+  assertPostgresUrl(directUrl, 'DIRECT_URL');
+  const adminEmail = String(config.ADMIN_EMAIL ?? '').trim().toLowerCase();
 
   const accessSecret = requireString(config, 'JWT_ACCESS_SECRET');
   const refreshSecret = requireString(config, 'JWT_REFRESH_SECRET');
@@ -72,7 +85,7 @@ export function validateEnvironment(
     .split(',')
     .map((origin) => origin.trim())
     .filter(Boolean);
-  if (origins.includes('*')) {
+  if (production && origins.includes('*')) {
     throw new Error('CORS_ORIGINS cannot contain a wildcard');
   }
   if (production && origins.some((origin) => !origin.startsWith('https://'))) {
@@ -111,11 +124,40 @@ export function validateEnvironment(
     }
   }
 
+  const imageKitPublicKey = requireString(config, 'IMAGEKIT_PUBLIC_KEY');
+  const imageKitPrivateKey = requireString(config, 'IMAGEKIT_PRIVATE_KEY');
+  const imageKitUrlEndpoint = requireString(config, 'IMAGEKIT_URL_ENDPOINT');
+  const imageKitVehiclesFolder = requireString(config, 'IMAGEKIT_VEHICLES_FOLDER');
+  if (!imageKitPublicKey.startsWith('public_')) {
+    throw new Error('IMAGEKIT_PUBLIC_KEY must start with public_');
+  }
+  if (!imageKitPrivateKey.startsWith('private_')) {
+    throw new Error('IMAGEKIT_PRIVATE_KEY must start with private_');
+  }
+  if (!imageKitUrlEndpoint.startsWith('https://')) {
+    throw new Error('IMAGEKIT_URL_ENDPOINT must use HTTPS');
+  }
+  if (imageKitVehiclesFolder.includes('/')) {
+    throw new Error('IMAGEKIT_VEHICLES_FOLDER must be a single folder name');
+  }
+
+  const resendApiKey = String(config.RESEND_API_KEY ?? '').trim();
+  if (resendApiKey) {
+    requireString(config, 'ADMIN_EMAIL');
+    requireString(config, 'RESEND_FROM_EMAIL');
+  }
+
   const requireEmailVerification = booleanValue(
     config,
     'REQUIRE_EMAIL_VERIFICATION',
     production,
   );
+
+  const defaultAdminEmail = String(config.DEFAULT_ADMIN_EMAIL ?? defaultAdminConfig.email).trim().toLowerCase();
+  const defaultAdminPassword = String(config.DEFAULT_ADMIN_PASSWORD ?? defaultAdminConfig.password);
+  const defaultAdminFirstName = String(config.DEFAULT_ADMIN_FIRST_NAME ?? defaultAdminConfig.firstName).trim();
+  const defaultAdminLastName = String(config.DEFAULT_ADMIN_LAST_NAME ?? defaultAdminConfig.lastName).trim();
+
   const notificationsEnabled = booleanValue(
     config,
     'NOTIFICATIONS_ENABLED',
@@ -127,26 +169,49 @@ export function validateEnvironment(
     );
   }
   if (notificationsEnabled) {
-    const webhookUrl = requireString(config, 'NOTIFICATION_WEBHOOK_URL');
-    const webhookSecret = requireString(config, 'NOTIFICATION_WEBHOOK_SECRET');
-    const payloadEncryptionKey = requireString(
-      config,
-      'NOTIFICATION_PAYLOAD_ENCRYPTION_KEY',
-    );
-    let parsedWebhookUrl: URL;
-    try {
-      parsedWebhookUrl = new URL(webhookUrl);
-    } catch {
-      throw new Error('NOTIFICATION_WEBHOOK_URL must be a valid URL');
-    }
-    if (production && parsedWebhookUrl.protocol !== 'https:') {
-      throw new Error('Production notification webhook must use HTTPS');
-    }
-    if (webhookSecret.length < 32) {
+    const resendApiKey = String(config.RESEND_API_KEY ?? '').trim();
+    const resendFromEmail = String(config.RESEND_FROM_EMAIL ?? '').trim();
+    const webhookUrl = String(config.NOTIFICATION_WEBHOOK_URL ?? '').trim();
+    const webhookSecret = String(config.NOTIFICATION_WEBHOOK_SECRET ?? '').trim();
+    const payloadEncryptionKey = String(
+      config.NOTIFICATION_PAYLOAD_ENCRYPTION_KEY ?? '',
+    ).trim();
+    const hasResend = Boolean(resendApiKey);
+    const hasWebhook = Boolean(webhookUrl);
+
+    if (!hasResend && !hasWebhook) {
       throw new Error(
-        'NOTIFICATION_WEBHOOK_SECRET must contain at least 32 characters',
+        'NOTIFICATIONS_ENABLED requires RESEND_API_KEY or NOTIFICATION_WEBHOOK_URL',
       );
     }
+
+    if (hasResend) {
+      requireString(config, 'RESEND_FROM_EMAIL');
+    }
+
+    if (hasWebhook) {
+      let parsedWebhookUrl: URL;
+      try {
+        parsedWebhookUrl = new URL(webhookUrl);
+      } catch {
+        throw new Error('NOTIFICATION_WEBHOOK_URL must be a valid URL');
+      }
+      if (production && parsedWebhookUrl.protocol !== 'https:') {
+        throw new Error('Production notification webhook must use HTTPS');
+      }
+      if (webhookSecret.length < 32) {
+        throw new Error(
+          'NOTIFICATION_WEBHOOK_SECRET must contain at least 32 characters',
+        );
+      }
+    } else if (!hasResend) {
+      throw new Error('NOTIFICATIONS_ENABLED requires a delivery provider');
+    }
+
+    if (hasResend && resendFromEmail.length < 3) {
+      throw new Error('RESEND_FROM_EMAIL is required');
+    }
+
     if (!/^[a-fA-F0-9]{64}$/.test(payloadEncryptionKey)) {
       throw new Error(
         'NOTIFICATION_PAYLOAD_ENCRYPTION_KEY must be exactly 64 hexadecimal characters',
@@ -192,6 +257,17 @@ export function validateEnvironment(
     DOCUMENT_UPLOADS_ENABLED: documentUploadsEnabled,
     MALWARE_SCAN_REQUIRED: malwareScanRequired,
     NOTIFICATIONS_ENABLED: notificationsEnabled,
+    RESEND_API_KEY: String(config.RESEND_API_KEY ?? '').trim(),
+    RESEND_FROM_EMAIL: String(config.RESEND_FROM_EMAIL ?? '').trim(),
+    ADMIN_EMAIL: adminEmail,
+    IMAGEKIT_PUBLIC_KEY: imageKitPublicKey,
+    IMAGEKIT_PRIVATE_KEY: imageKitPrivateKey,
+    IMAGEKIT_URL_ENDPOINT: imageKitUrlEndpoint.replace(/\/$/, ''),
+    IMAGEKIT_VEHICLES_FOLDER: imageKitVehiclesFolder,
+    DEFAULT_ADMIN_EMAIL: defaultAdminEmail,
+    DEFAULT_ADMIN_PASSWORD: defaultAdminPassword,
+    DEFAULT_ADMIN_FIRST_NAME: defaultAdminFirstName,
+    DEFAULT_ADMIN_LAST_NAME: defaultAdminLastName,
     ENABLE_SWAGGER: booleanValue(config, 'ENABLE_SWAGGER', !production),
     CORS_ORIGINS: origins.join(','),
   };

@@ -13,8 +13,8 @@ export function AuthSuccess() {
         <span className="grid h-14 w-14 place-items-center rounded-2xl bg-sky-50 text-action" aria-hidden="true">
           <CheckIcon className="h-6 w-6" />
         </span>
-        <Button to="/portail" size="lg" fullWidth>
-          {t('auth.successCta')}
+        <Button to="/connexion" size="lg" fullWidth>
+          {t('auth.signIn')}
         </Button>
         <Button to="/vehicules" variant="secondary" fullWidth>
           {t('common.viewVehicles')}

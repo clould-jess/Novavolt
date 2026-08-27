@@ -48,7 +48,7 @@ async function bootstrap(): Promise<void> {
     .split(',')
     .map((origin) => origin.trim());
   app.enableCors({
-    origin: origins,
+    origin: production ? origins : true,
     credentials: false,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     allowedHeaders: [

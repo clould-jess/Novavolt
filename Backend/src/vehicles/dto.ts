@@ -44,6 +44,29 @@ export class CreateVehicleDto {
   @MaxLength(40)
   color?: string;
 
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
+  @IsString()
+  @Length(1, 60)
+  city!: string;
+
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  @Max(9)
+  seats!: number;
+
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  @Max(2000)
+  rangeKm!: number;
+
+  @IsOptional()
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
+  @IsString()
+  @MaxLength(1000)
+  description?: string;
+
   @Transform(({ value }) =>
     typeof value === 'string' ? value.trim().toUpperCase() : value,
   )
@@ -91,6 +114,32 @@ export class UpdateVehicleDto {
   color?: string;
 
   @IsOptional()
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
+  @IsString()
+  @Length(1, 60)
+  city?: string;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  @Max(9)
+  seats?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  @Max(2000)
+  rangeKm?: number;
+
+  @IsOptional()
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
+  @IsString()
+  @MaxLength(1000)
+  description?: string;
+
+  @IsOptional()
   @IsIn(['ELECTRIC', 'HYBRID', 'PLUG_IN_HYBRID'])
   powertrain?: string;
 
@@ -135,6 +184,46 @@ export class CreateVehiclePhotoUploadDto {
   @Min(0)
   @Max(100)
   sortOrder = 0;
+}
+
+export class CompleteVehiclePhotoUploadDto {
+  @IsString()
+  @MaxLength(120)
+  imagekitFileId!: string;
+
+  @IsString()
+  @MaxLength(1024)
+  imagekitFilePath!: string;
+
+  @IsString()
+  @MaxLength(2048)
+  imagekitUrl!: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(2048)
+  imagekitThumbnailUrl?: string;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  @Max(100_000_000)
+  sizeBytes?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  @Max(20_000)
+  width?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  @Max(20_000)
+  height?: number;
 }
 
 export class VehicleQueryDto extends PaginationDto {

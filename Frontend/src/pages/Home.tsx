@@ -7,7 +7,6 @@ import { FeaturedVehicles } from '../components/home/FeaturedVehicles';
 import { Hero } from '../components/home/Hero';
 import { HowItWorksSection } from '../components/home/HowItWorksSection';
 import { StatsSection } from '../components/home/StatsSection';
-import { TestimonialsSection } from '../components/home/TestimonialsSection';
 import { TrustBar } from '../components/home/TrustBar';
 import { CtaBanner } from '../components/marketing/CtaBanner';
 import { FaqSection } from '../components/marketing/FaqSection';
@@ -31,7 +30,6 @@ export function Home() {
         </div>
       </section>
       <StatsSection />
-      <TestimonialsSection />
       <FaqSection
         title={t('faqPage.title')}
         subtitle={t('faqPage.subtitle')}

@@ -1,11 +1,9 @@
-import React, { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ArrowLeftIcon, ArrowRightIcon, CheckCircle2Icon, InfoIcon, LockIcon } from 'lucide-react';
 import { useI18n } from '../../contexts/I18nContext';
 import { availabilityFor, availabilityReferenceDate } from '../../data/availability';
 import { currentCustomer } from '../../data/customers';
 import { documentsFor } from '../../data/documents';
-import { mockVehicles } from '../../data/vehicles';
-import { AvailabilityCalendar } from '../../components/ui/AvailabilityCalendar';
 import { Button } from '../../components/ui/Button';
 import { Card, CardHeader } from '../../components/ui/Card';
 import { Checkbox } from '../../components/ui/Checkbox';
@@ -13,50 +11,123 @@ import { PageHeading } from '../../components/ui/PageHeading';
 import { ProgressStepper } from '../../components/ui/ProgressStepper';
 import { StatusBadge } from '../../components/ui/StatusBadge';
 import { VehicleImage } from '../../components/ui/VehicleImage';
+import { CenteredLoading } from '../../components/ui/CenteredLoading';
+import { EmptyState } from '../../components/ui/EmptyState';
+import { ApiError } from '../../services/api';
+import { listPublicVehicles, mapPublicVehicles } from '../../services/publicVehicles';
+import type { Vehicle } from '../../types';
+import { AvailabilityCalendar } from '../../components/ui/AvailabilityCalendar';
 import { cn } from '../../utils/cn';
+import { CarFrontIcon } from 'lucide-react';
 
 const optionKeys = [
-{ id: 'insurance', price: 29 },
-{ id: 'charge', price: 15 },
-{ id: 'delivery', price: 49 }];
-
+  { id: 'insurance', price: 29 },
+  { id: 'charge', price: 15 },
+  { id: 'delivery', price: 49 },
+];
 
 export function PortalBookingFlow() {
   const { t, money, date } = useI18n();
   const [step, setStep] = useState(0);
-  const [vehicleId, setVehicleId] = useState(mockVehicles[0].id);
+  const [catalog, setCatalog] = useState<Vehicle[]>([]);
+  const [vehicleId, setVehicleId] = useState('');
   const [start, setStart] = useState<string | undefined>('2026-08-21');
   const [end, setEnd] = useState<string | undefined>('2026-08-28');
   const [options, setOptions] = useState<string[]>(['insurance']);
+  const [loading, setLoading] = useState(true);
+  const [errorTitle, setErrorTitle] = useState<string | null>(null);
+  const [errorBody, setErrorBody] = useState<string | null>(null);
 
-  const vehicle = mockVehicles.find((item) => item.id === vehicleId) ?? mockVehicles[0];
+  useEffect(() => {
+    let active = true;
+    setLoading(true);
+    setErrorTitle(null);
+    setErrorBody(null);
+    listPublicVehicles()
+      .then((response) => {
+        if (!active) return;
+        const vehicles = mapPublicVehicles(response.items);
+        setCatalog(vehicles);
+        setVehicleId((current) => current || vehicles[0]?.id || '');
+      })
+      .catch((error) => {
+        if (!active) return;
+        if (error instanceof TypeError) {
+          setErrorTitle(t('auth.networkErrorTitle'));
+          setErrorBody(t('auth.networkErrorBody'));
+          return;
+        }
+        if (error instanceof ApiError) {
+          setErrorTitle(t('auth.serverErrorTitle'));
+          setErrorBody(error.message);
+          return;
+        }
+        setErrorTitle(t('auth.serverErrorTitle'));
+        setErrorBody(t('auth.serverErrorTitle'));
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [t]);
+
+  useEffect(() => {
+    if (vehicleId || catalog.length === 0) return;
+    setVehicleId(catalog[0].id);
+  }, [vehicleId, catalog]);
+
+  const vehicle = catalog.find((item) => item.id === vehicleId) ?? catalog[0];
   const documents = documentsFor(currentCustomer.id);
 
   const steps = [
-  { id: 'vehicle', label: t('portal.stepVehicle') },
-  { id: 'dates', label: t('portal.stepDates') },
-  { id: 'options', label: t('portal.stepOptions') },
-  { id: 'file', label: t('portal.stepFile') },
-  { id: 'payment', label: t('portal.stepPayment') },
-  { id: 'confirm', label: t('portal.stepConfirm') }];
-
+    { id: 'vehicle', label: t('portal.stepVehicle') },
+    { id: 'dates', label: t('portal.stepDates') },
+    { id: 'options', label: t('portal.stepOptions') },
+    { id: 'file', label: t('portal.stepFile') },
+    { id: 'payment', label: t('portal.stepPayment') },
+    { id: 'confirm', label: t('portal.stepConfirm') },
+  ];
 
   const summary = useMemo(() => {
+    if (!vehicle) {
+      return { base: 0, extras: 0, taxes: 0, deposit: 0, total: 0 };
+    }
     const base = vehicle.pricing.weekly;
-    const extras = optionKeys.filter((option) => options.includes(option.id)).reduce((sum, o) => sum + o.price, 0);
+    const extras = optionKeys.filter((option) => options.includes(option.id)).reduce((sum, option) => sum + option.price, 0);
     const taxes = Math.round((base + extras) * 0.14975);
     return { base, extras, taxes, deposit: vehicle.pricing.deposit, total: base + extras + taxes };
   }, [vehicle, options]);
 
   const toggleOption = (id: string) =>
-  setOptions((current) => current.includes(id) ? current.filter((item) => item !== id) : [...current, id]);
+    setOptions((current) => (current.includes(id) ? current.filter((item) => item !== id) : [...current, id]));
+
+  if (loading) {
+    return (
+      <div className="flex flex-col gap-6">
+        <PageHeading title={t('portal.bookingTitle')} description={t('portal.step', { current: 1, total: 6 })} />
+        <CenteredLoading className="min-h-[45vh]" />
+      </div>
+    );
+  }
+
+  if (!vehicle) {
+    return (
+      <div className="flex flex-col gap-6">
+        <PageHeading title={t('portal.bookingTitle')} description={t('portal.step', { current: 1, total: 6 })} />
+        <EmptyState
+          icon={<CarFrontIcon className="h-5 w-5" />}
+          title={errorTitle ?? t('auth.serverErrorTitle')}
+          body={errorBody ?? t('vehiclesPage.emptyBody')}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-6">
-      <PageHeading
-        title={t('portal.bookingTitle')}
-        description={t('portal.step', { current: step + 1, total: steps.length })} />
-      
+      <PageHeading title={t('portal.bookingTitle')} description={t('portal.step', { current: step + 1, total: steps.length })} />
 
       <Card padding="md">
         <ProgressStepper steps={steps} current={step} label={t('portal.bookingTitle')} />
@@ -64,26 +135,22 @@ export function PortalBookingFlow() {
 
       <div className="grid gap-5 lg:grid-cols-[1.4fr_0.6fr]">
         <div className="flex flex-col gap-5">
-          {step === 0 &&
-          <Card padding="md">
+          {step === 0 && (
+            <Card padding="md">
               <CardHeader title={t('portal.stepVehicle')} />
               <ul className="mt-5 grid gap-3 sm:grid-cols-2">
-                {mockVehicles.slice(0, 6).map((item) =>
-              <li key={item.id}>
+                {catalog.slice(0, 6).map((item) => (
+                  <li key={item.id}>
                     <button
-                  type="button"
-                  onClick={() => setVehicleId(item.id)}
-                  aria-pressed={item.id === vehicleId}
-                  className={cn(
-                    'flex w-full items-center gap-3 rounded-xl border p-3 text-left transition-[border-color,background-color] duration-200 ease-signature',
-                    item.id === vehicleId ? 'border-action bg-sky-50' : 'border-line bg-white hover:border-sky-200'
-                  )}>
-                  
-                      <VehicleImage
-                    src={item.imageUrl}
-                    alt={`${item.brand} ${item.model}`}
-                    className="h-14 w-20 shrink-0 rounded-lg" />
-                  
+                      type="button"
+                      onClick={() => setVehicleId(item.id)}
+                      aria-pressed={item.id === vehicleId}
+                      className={cn(
+                        'flex w-full items-center gap-3 rounded-xl border p-3 text-left transition-[border-color,background-color] duration-200 ease-signature',
+                        item.id === vehicleId ? 'border-action bg-sky-50' : 'border-line bg-white hover:border-sky-200',
+                      )}
+                    >
+                      <VehicleImage src={item.imageUrl} alt={`${item.brand} ${item.model}`} className="h-14 w-20 shrink-0 rounded-lg" />
                       <span className="min-w-0">
                         <span className="block truncate text-2xs font-semibold text-ink">
                           {item.brand} {item.model}
@@ -94,49 +161,46 @@ export function PortalBookingFlow() {
                       </span>
                     </button>
                   </li>
-              )}
+                ))}
               </ul>
             </Card>
-          }
+          )}
 
-          {step === 1 &&
-          <Card padding="md">
+          {step === 1 && (
+            <Card padding="md">
               <CardHeader title={t('portal.stepDates')} description={t('vehicleDetail.selectDates')} />
               <AvailabilityCalendar
-              className="mt-5"
-              days={availabilityFor(vehicle.id)}
-              referenceDate={availabilityReferenceDate}
-              selectedStart={start}
-              selectedEnd={end}
-              onSelectDay={(iso) => {
-                if (!start || start && end) {
-                  setStart(iso);
-                  setEnd(undefined);
-                } else if (iso < start) {
-                  setStart(iso);
-                } else {
-                  setEnd(iso);
-                }
-              }} />
-            
+                className="mt-5"
+                days={availabilityFor(vehicle.id)}
+                referenceDate={availabilityReferenceDate}
+                selectedStart={start}
+                selectedEnd={end}
+                onSelectDay={(iso) => {
+                  if (!start || (start && end)) {
+                    setStart(iso);
+                    setEnd(undefined);
+                  } else if (iso < start) {
+                    setStart(iso);
+                  } else {
+                    setEnd(iso);
+                  }
+                }}
+              />
             </Card>
-          }
+          )}
 
-          {step === 2 &&
-          <Card padding="md">
+          {step === 2 && (
+            <Card padding="md">
               <CardHeader title={t('portal.stepOptions')} />
               <ul className="mt-5 flex flex-col gap-3">
-                {optionKeys.map((option) =>
-              <li
-                key={option.id}
-                className="flex items-start justify-between gap-4 rounded-xl border border-line p-4">
-                
+                {optionKeys.map((option) => (
+                  <li key={option.id} className="flex items-start justify-between gap-4 rounded-xl border border-line p-4">
                     <Checkbox
-                  id={`option-${option.id}`}
-                  checked={options.includes(option.id)}
-                  onChange={() => toggleOption(option.id)}
-                  label={
-                  <>
+                      id={`option-${option.id}`}
+                      checked={options.includes(option.id)}
+                      onChange={() => toggleOption(option.id)}
+                      label={
+                        <>
                           <span className="block text-2xs font-semibold text-ink">
                             {t(`portal.option${option.id.charAt(0).toUpperCase()}${option.id.slice(1)}`)}
                           </span>
@@ -144,36 +208,36 @@ export function PortalBookingFlow() {
                             {t(`portal.option${option.id.charAt(0).toUpperCase()}${option.id.slice(1)}Desc`)}
                           </span>
                         </>
-                  } />
-                
+                      }
+                    />
                     <span className="shrink-0 text-2xs font-semibold text-ink">
                       {money(option.price)} {t('common.perWeek')}
                     </span>
                   </li>
-              )}
+                ))}
               </ul>
             </Card>
-          }
+          )}
 
-          {step === 3 &&
-          <Card padding="md">
+          {step === 3 && (
+            <Card padding="md">
               <CardHeader title={t('portal.stepFile')} description={t('portal.documentsSubtitle')} />
               <ul className="mt-5 flex flex-col divide-y divide-line">
-                {documents.map((doc) =>
-              <li key={doc.id} className="flex items-center justify-between gap-4 py-3 first:pt-0">
+                {documents.map((doc) => (
+                  <li key={doc.id} className="flex items-center justify-between gap-4 py-3 first:pt-0">
                     <span className="truncate text-2xs text-body">{doc.label}</span>
                     <StatusBadge kind="doc" value={doc.status} />
                   </li>
-              )}
+                ))}
               </ul>
               <Button to="/portail/documents" variant="secondary" size="sm" className="mt-5">
                 {t('portal.nextActionCta')}
               </Button>
             </Card>
-          }
+          )}
 
-          {step === 4 &&
-          <Card padding="md">
+          {step === 4 && (
+            <Card padding="md">
               <CardHeader title={t('portal.stepPayment')} />
               <div className="mt-5 flex items-start gap-3 rounded-xl border border-line bg-soft p-4">
                 <LockIcon className="mt-0.5 h-4 w-4 shrink-0 text-action" aria-hidden="true" />
@@ -183,10 +247,10 @@ export function PortalBookingFlow() {
                 {t('portal.addPayment')}
               </Button>
             </Card>
-          }
+          )}
 
-          {step === 5 &&
-          <Card padding="lg">
+          {step === 5 && (
+            <Card padding="lg">
               <span className="grid h-12 w-12 place-items-center rounded-2xl bg-sky-50 text-action" aria-hidden="true">
                 <CheckCircle2Icon className="h-6 w-6" />
               </span>
@@ -203,26 +267,23 @@ export function PortalBookingFlow() {
                 </Button>
               </div>
             </Card>
-          }
+          )}
 
-          {step < 5 &&
-          <div className="flex items-center justify-between gap-4">
+          {step < 5 && (
+            <div className="flex items-center justify-between gap-4">
               <Button
-              variant="secondary"
-              disabled={step === 0}
-              onClick={() => setStep((value) => Math.max(0, value - 1))}
-              iconLeft={<ArrowLeftIcon className="h-4 w-4" />}>
-              
+                variant="secondary"
+                disabled={step === 0}
+                onClick={() => setStep((value) => Math.max(0, value - 1))}
+                iconLeft={<ArrowLeftIcon className="h-4 w-4" />}
+              >
                 {t('common.previous')}
               </Button>
-              <Button
-              onClick={() => setStep((value) => Math.min(steps.length - 1, value + 1))}
-              iconRight={<ArrowRightIcon className="h-4 w-4" />}>
-              
+              <Button onClick={() => setStep((value) => Math.min(steps.length - 1, value + 1))} iconRight={<ArrowRightIcon className="h-4 w-4" />}>
                 {t('common.next')}
               </Button>
             </div>
-          }
+          )}
         </div>
 
         <div className="lg:sticky lg:top-24 lg:self-start">
@@ -259,9 +320,7 @@ export function PortalBookingFlow() {
               </div>
               <div className="mt-2 flex items-baseline justify-between gap-4 border-t border-line pt-3">
                 <dt className="text-2xs font-semibold text-ink">{t('portal.summaryTotal')}</dt>
-                <dd className="font-display text-xl font-bold tracking-[-0.02em] text-ink">
-                  {money(summary.total, true)}
-                </dd>
+                <dd className="font-display text-xl font-bold tracking-[-0.02em] text-ink">{money(summary.total, true)}</dd>
               </div>
             </dl>
             <div className="mt-5 flex items-start gap-2.5 rounded-xl bg-soft p-3.5">
@@ -271,6 +330,6 @@ export function PortalBookingFlow() {
           </Card>
         </div>
       </div>
-    </div>);
-
+    </div>
+  );
 }
