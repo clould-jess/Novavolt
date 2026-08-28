@@ -20,6 +20,10 @@ Create the Neon project/database in the Neon dashboard, then replace both `DATAB
 
 At startup the terminal reports the status of Neon, ImageKit, and Resend. External-provider failures are shown as warnings and do not stop the API; PostgreSQL remains mandatory and prevents a production startup when unreachable.
 
+## Frontend origin
+
+Set CORS_ORIGINS=https://locationnovavolt.ca in the backend host. If you also serve the site through www.locationnovavolt.ca, add it as a comma-separated second origin. Once the API has its HTTPS URL, set VITE_API_BASE_URL=https://<api-host>/api/v1 in the frontend host and redeploy the frontend.
+
 ## Database
 
 The initial migration enables the required PostgreSQL constraints for the rental workflow. The migration user must be allowed to create the required extension. The runtime user does not need schema-creation privileges.
