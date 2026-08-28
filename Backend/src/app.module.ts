@@ -27,6 +27,7 @@ import { PrismaModule } from './prisma.module';
 import { PartnershipLeadsModule } from './partnership-leads/partnership-leads.module';
 import { ReservationRequestsModule } from './reservation-requests/reservation-requests.module';
 import { RentalsModule } from './rentals/rentals.module';
+import { StartupDiagnosticsService } from './startup-diagnostics.service';
 import { UsersModule } from './users/users.module';
 import { VehiclesModule } from './vehicles/vehicles.module';
 
@@ -69,6 +70,7 @@ import { VehiclesModule } from './vehicles/vehicles.module';
     HealthModule,
   ],
   providers: [
+    StartupDiagnosticsService,
     { provide: APP_GUARD, useClass: ThrottlerGuard },
     { provide: APP_FILTER, useClass: PrismaExceptionFilter },
     { provide: APP_INTERCEPTOR, useClass: RequestLoggingInterceptor },

@@ -4,6 +4,7 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
 import { AppModule } from './app.module';
+import { StartupDiagnosticsService } from './startup-diagnostics.service';
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule, {
@@ -80,9 +81,10 @@ async function bootstrap(): Promise<void> {
   }
 
   app.enableShutdownHooks();
+  await app.get(StartupDiagnosticsService).report();
   const port = config.getOrThrow<number>('PORT');
   await app.listen(port, '0.0.0.0');
-  Logger.log(`NovaVolt API listening on port ${port}`, 'Bootstrap');
+  Logger.log(`NovaVolt API is ready | http://0.0.0.0:${port}/api/v1/health/ready`, 'Bootstrap');
 }
 
 void bootstrap();

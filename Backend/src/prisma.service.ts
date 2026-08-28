@@ -31,6 +31,7 @@ export class PrismaService
   async onModuleInit(): Promise<void> {
     try {
       await this.$connect();
+      this.logger.log('Database connection established');
     } catch (error) {
       if (process.env.NODE_ENV === 'production') {
         throw error;
@@ -38,9 +39,7 @@ export class PrismaService
 
       const message =
         error instanceof Error ? error.message : 'Unknown Prisma connection error';
-      this.logger.warn(
-        `Prisma connection skipped during startup: ${message}`,
-      );
+      this.logger.warn(`Database connection unavailable at startup: ${message}`);
     }
   }
 

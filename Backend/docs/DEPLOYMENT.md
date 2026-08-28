@@ -6,13 +6,19 @@
 2. Create a limited application user for NovaVolt.
 3. Set secrets and variables from `.env.example` in your secret manager.
 4. Build the backend with the Node scripts in this repository and publish the immutable artifact.
-5. Run `npm run prisma:deploy` as the single migration step.
+5. Start the backend with `npm start` (or `npm run start:prod`). Its `prestart:prod` hook runs `prisma migrate deploy` first, so a new Neon database receives every versioned table, index, enum, and constraint before the API accepts traffic.
 6. Deploy the API behind TLS and use `/api/v1/health/ready` as the readiness probe.
 7. Test signup, notifications, file uploads, malware checks, and a Stripe test payment.
 
 Generate `NOTIFICATION_PAYLOAD_ENCRYPTION_KEY` with `openssl rand -hex 32`.
 
 Do not run multiple migration tasks at the same time. Keep at least one verified backup before any future destructive migration.
+
+## New Neon account
+
+Create the Neon project/database in the Neon dashboard, then replace both `DATABASE_URL` (pooled URL) and `DIRECT_URL` (direct URL) in the host's environment variables. The API creates the **schema** automatically at startup; it cannot create a new Neon project or database from a PostgreSQL connection string alone. Use `npm run start:prod`, not `node dist/main.js`, to retain automatic migrations.
+
+At startup the terminal reports the status of Neon, ImageKit, and Resend. External-provider failures are shown as warnings and do not stop the API; PostgreSQL remains mandatory and prevents a production startup when unreachable.
 
 ## Database
 
