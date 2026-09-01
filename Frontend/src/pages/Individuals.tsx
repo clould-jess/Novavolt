@@ -166,7 +166,7 @@ export function Individuals() {
             <ul className="mt-10 grid gap-6 sm:grid-cols-2 lg:mt-14 lg:grid-cols-3">
               {recommended.map((vehicle, index) => (
                 <Reveal as="li" key={vehicle.id} index={index} className="h-full">
-                  <VehicleCard vehicle={vehicle} priceMode="daily" />
+                  <VehicleCard vehicle={vehicle} />
                 </Reveal>
               ))}
             </ul>

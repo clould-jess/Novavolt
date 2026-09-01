@@ -14,6 +14,7 @@ import { Select } from '../components/ui/Select';
 import { Textarea } from '../components/ui/Textarea';
 import { PageHero } from '../components/marketing/PageHero';
 import { createContactMessage } from '../services/contact';
+const montrealLocationImage = '/assets/images/montreal-location.jpg';
 
 export function Contact() {
   const { t, locale } = useI18n();
@@ -138,7 +139,11 @@ export function Contact() {
                 <p className="mt-2 max-w-md text-sm leading-relaxed text-muted">
                   {t('contactPage.successBody')}
                 </p>
-                <Button type="button" variant="secondary" className="mt-6" onClick={handleNewRequest}>
+                <Button href={phoneHref} className="mt-6 bg-emerald-600 text-white hover:bg-emerald-700">
+                  <PhoneIcon className="h-4 w-4" aria-hidden="true" />
+                  {t('contactPage.callCta')}
+                </Button>
+                <Button type="button" variant="secondary" className="mt-3" onClick={handleNewRequest}>
                   {t('common.newRequest')}
                 </Button>
               </motion.div>
@@ -201,7 +206,8 @@ export function Contact() {
           <div className="flex flex-col gap-6">
             <Card padding="none" className="overflow-hidden">
               <div
-                className="flex h-52 items-end bg-surface p-5"
+                className="flex h-52 items-end bg-surface bg-cover bg-center p-5"
+                style={{ backgroundImage: `url(${montrealLocationImage})` }}
                 role="img"
                 aria-label={t('contactPage.mapAlt')}>
                 

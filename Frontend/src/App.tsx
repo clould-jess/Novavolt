@@ -50,10 +50,7 @@ import { BlogPostDetail } from './pages/BlogPostDetail';
 import { clearAuthSession } from './services/auth';
 import { useToast } from './contexts/ToastContext';
 
-/**
- * Control visibility of login, customer portal, and admin dashboard.
- * Set to `true` when internal portal and authentication features are ready for public release.
- */
+
 const ENABLE_INTERNAL_ROUTES = true;
 
 function SessionExpiryHandler() {
@@ -105,6 +102,7 @@ export function App() {
 
             {/* Internal Authentication, Customer Portal, and Admin routes */}
             {ENABLE_INTERNAL_ROUTES && (
+              
               <>
                 {/* Authentication */}
                 <Route path="/connexion" element={<SignIn />} />

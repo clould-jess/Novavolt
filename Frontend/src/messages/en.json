@@ -1,4 +1,4 @@
-﻿{
+{
   "common": {
     "brand": "Novavolt",
     "live": "Real-time metrics",
@@ -220,7 +220,7 @@
     "satisfaction": "Driver satisfaction rate"
   },
   "testimonials": {
-    "title": "Already driving with us",
+    "title": "What customers say about us",
     "subtitle": "Demonstration testimonials.",
     "t1": {
       "quote": "I run my evening shifts without thinking about gas. The weekly rate is clear and the car was ready on the agreed day.",

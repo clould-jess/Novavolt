@@ -548,7 +548,6 @@ export function AdminVehicleWizardPage() {
                 <Input id="vehicle-seats" label={t('admin.fleet.fieldSeats')} type="number" min={1} max={9} value={draft.seats} onChange={(event) => setDraft({ ...draft, seats: event.target.value })} />
                 <Input id="vehicle-range" label={t('admin.fleet.fieldRangeKm')} type="number" min={1} max={2000} value={draft.rangeKm} onChange={(event) => setDraft({ ...draft, rangeKm: event.target.value })} />
                 <Input id="vehicle-odometer" label={t('admin.fleet.fieldOdometer')} type="number" min={0} value={draft.odometer} onChange={(event) => setDraft({ ...draft, odometer: event.target.value })} />
-                <Input id="vehicle-rate" label={t('admin.fleet.fieldWeeklyRate')} type="number" min={1} value={draft.weeklyRateCents} onChange={(event) => setDraft({ ...draft, weeklyRateCents: event.target.value })} />
               </div>
 
               <div className="space-y-2">

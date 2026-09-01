@@ -52,7 +52,8 @@ function powertrainLabel(t: ReturnType<typeof useI18n>['t'], value: PublicVehicl
 
 export function VehicleDetail() {
   const { id = '' } = useParams();
-  const { t, money } = useI18n();
+  const { t } = useI18n();
+  const phoneHref = `tel:${t('common.phone').replace(/[^\d+]/g, '')}`;
   const { showToast } = useToast();
   const reservationRef = useRef<HTMLDivElement | null>(null);
   const [vehicle, setVehicle] = useState<PublicVehicle | null>(null);
@@ -149,9 +150,6 @@ export function VehicleDetail() {
   }
 
   const name = `${vehicle.make} ${vehicle.model}`;
-  const weekly = Math.max(1, Math.round(vehicle.weeklyRateCents / 100));
-  const daily = Math.max(1, Math.round(weekly / 7));
-  const monthly = Math.max(weekly * 4, weekly);
   const gallery = photos.length > 0 ? photos : vehicle.photos;
   const activePhoto = gallery[activeImage];
 
@@ -321,23 +319,6 @@ export function VehicleDetail() {
               </p>
 
               <Card className="mt-6" padding="md">
-                <div className="flex items-end justify-between gap-4">
-                  <div>
-                    <p className="text-[0.75rem] font-medium text-muted">{t('common.from')}</p>
-                    <p className="font-display text-3xl font-bold tracking-[-0.03em] text-ink">
-                      {money(weekly)}
-                      <span className="ml-1 text-2xs font-semibold text-muted">{t('common.perWeek')}</span>
-                    </p>
-                  </div>
-                  <ul className="text-right text-[0.75rem] text-muted">
-                    <li>
-                      {money(daily)} {t('common.perDay')}
-                    </li>
-                    <li>
-                      {money(monthly)} {t('common.perMonth')}
-                    </li>
-                  </ul>
-                </div>
                 <div className="mt-5">
                   <Button
                     fullWidth
@@ -398,7 +379,11 @@ export function VehicleDetail() {
                               <p className="mt-1 text-2xs leading-relaxed text-emerald-800">
                                 {t('vehicleDetail.reservationSuccessBody')}
                               </p>
-                              <Button type="button" variant="secondary" size="sm" className="mt-4" onClick={handleAnotherReservation}>
+                              <Button href={phoneHref} size="sm" className="mt-4 bg-emerald-600 text-white hover:bg-emerald-700">
+                                <PhoneIcon className="h-4 w-4" aria-hidden="true" />
+                                {t('contactPage.callCta')}
+                              </Button>
+                              <Button type="button" variant="secondary" size="sm" className="mt-3" onClick={handleAnotherReservation}>
                                 {t('common.newRequest')}
                               </Button>
                             </div>
@@ -576,7 +561,6 @@ export function VehicleDetail() {
               <SectionTitle as="h2" variant={3} title={t('vehicleDetail.conditionsTitle')} />
               <dl className="mt-8 divide-y divide-line border-y border-line">
                 {[
-                  { label: t('vehicleDetail.conditionDeposit'), value: money(0) },
                   { label: t('vehicleDetail.conditionDocs'), value: t('vehicleDetail.conditionDocsValue') },
                   { label: t('vehicleDetail.conditionMileage'), value: t('vehicleDetail.conditionMileageValue') },
                   { label: t('vehicleDetail.conditionCancel'), value: t('vehicleDetail.conditionCancelValue') },
@@ -647,12 +631,7 @@ export function VehicleDetail() {
       />
 
       <div className="sticky bottom-0 z-40 border-t border-line bg-white/95 px-4 py-3 backdrop-blur lg:hidden">
-        <div className="flex items-center justify-between gap-4">
-          <p>
-            <span className="block text-[0.75rem] text-muted">{t('common.from')}</span>
-            <span className="font-display text-lg font-bold tracking-[-0.02em] text-ink">{money(weekly)}</span>
-            <span className="ml-1 text-[0.75rem] font-semibold text-muted">{t('common.perWeek')}</span>
-          </p>
+        <div className="flex justify-end">
           <Button onClick={reservationOpen ? () => setReservationOpen(false) : openReservationForm}>
             {reservationOpen ? t('vehicleDetail.reservationClose') : t('vehicleDetail.bookCta')}
           </Button>

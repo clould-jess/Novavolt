@@ -23,22 +23,20 @@ export function StatsSection() {
       to: 87112186,
       prefix: '',
       suffix: ' km',
-      rate: 2.315, // ~2.315 km added per second
+      rate: 2.315,
       decimals: 0,
       icon: ActivityIcon,
-      accentColor: 'bg-emerald-50 text-emerald-600 border-emerald-100',
-      isLive: true
+      accentColor: 'bg-emerald-50 text-emerald-600 border-emerald-100'
     },
     {
       id: 'co2Saved',
       to: 5077637.94,
       prefix: '',
       suffix: ' kg',
-      rate: 0.1349, // ~0.1349 kg CO2 saved per second
+      rate: 0.1349,
       decimals: 2,
       icon: LeafIcon,
-      accentColor: 'bg-teal-50 text-teal-600 border-teal-100',
-      isLive: true
+      accentColor: 'bg-teal-50 text-teal-600 border-teal-100'
     },
     {
       id: 'satisfaction',
@@ -56,16 +54,6 @@ export function StatsSection() {
     <section className="relative border-y border-line bg-white px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
       <div className="relative mx-auto max-w-content">
         <div className="flex flex-col items-center text-center">
-          {/* Live Indicator Badge */}
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3.5 py-1 text-xs font-semibold text-emerald-700">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
-            </span>
-            {t('common.live') || 'En direct'}
-          </div>
-
-          {/* Pure White Header with Animated Underline */}
           <SectionTitle
             as="h2"
             variant={3}
@@ -79,7 +67,7 @@ export function StatsSection() {
 
         {/* Stats Grid Cards */}
         <ul className="mt-12 grid gap-6 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4">
-          {stats.map(({ id, to, prefix, suffix, rate, decimals, icon: Icon, accentColor, isLive }, index) => (
+          {stats.map(({ id, to, prefix, suffix, rate = 0, decimals, icon: Icon, accentColor }, index) => (
             <Reveal as="li" key={id} index={index}>
               <div className="group relative flex h-full flex-col justify-between rounded-2xl border border-line bg-white p-6 shadow-sm transition-all duration-300 hover:border-action/40 hover:shadow-xl">
                 <div>
@@ -89,15 +77,9 @@ export function StatsSection() {
                     >
                       <Icon className="h-5 w-5" />
                     </div>
-
-                    {isLive && (
-                      <span className="rounded-md border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[0.65rem] font-bold uppercase tracking-wider text-emerald-700">
-                        Live
-                      </span>
-                    )}
                   </div>
 
-                  <p className="mt-6 font-display text-3xl font-bold tracking-tight text-ink sm:text-4xl">
+                  <p className="mt-6 min-h-11 max-w-full overflow-hidden text-ellipsis whitespace-nowrap font-display text-[clamp(1.1rem,6.8vw,2.25rem)] font-bold leading-10 tracking-tight text-ink tabular-nums">
                     <LiveCounter
                       to={to}
                       ratePerSecond={rate}

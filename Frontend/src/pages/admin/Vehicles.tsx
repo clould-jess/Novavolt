@@ -72,7 +72,7 @@ function toErrorMessage(error: unknown) {
 }
 
 export function AdminVehicles() {
-  const { t, money, num, locale } = useI18n();
+  const { t, num, locale } = useI18n();
   const { showToast } = useToast();
   const navigate = useNavigate();
   const [items, setItems] = useState<AdminVehicle[]>([]);
@@ -332,7 +332,6 @@ export function AdminVehicles() {
                             {vehicle.city ?? t('common.city')} · {vehicle.year} · {vehicle.plate}
                           </p>
                         </div>
-                        <p className="font-display text-lg font-semibold text-action">{money(vehicle.weeklyRateCents)}</p>
                       </div>
 
                       <div className="flex flex-wrap gap-2">

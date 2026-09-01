@@ -22,7 +22,7 @@ type Tab = 'all' | 'driver' | 'individual' | 'electric' | 'hybrid';
 const PAGE_SIZE = 6;
 
 export function Vehicles() {
-  const { t, money } = useI18n();
+  const { t } = useI18n();
   const [params] = useSearchParams();
   const [catalog, setCatalog] = useState<Vehicle[]>([]);
   const [totalCount, setTotalCount] = useState(0);
@@ -36,7 +36,6 @@ export function Vehicles() {
   const [city, setCity] = useState<City | 'all'>((params.get('ville') as City) ?? 'all');
   const [brand, setBrand] = useState('all');
   const [minRange, setMinRange] = useState(0);
-  const [maxWeekly, setMaxWeekly] = useState(450);
   const [availableOnly, setAvailableOnly] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [page, setPage] = useState(1);
@@ -109,13 +108,12 @@ export function Vehicles() {
         if (city !== 'all' && vehicle.city !== city) return false;
         if (brand !== 'all' && vehicle.brand !== brand) return false;
         if (vehicle.rangeKm < minRange) return false;
-        if (vehicle.pricing.weekly > maxWeekly) return false;
         if (availableOnly && vehicle.status !== 'available') return false;
         if (tab === 'driver' || tab === 'individual') return vehicle.useCases.includes(tab as UseCase);
         if (tab === 'electric' || tab === 'hybrid') return vehicle.powertrain === (tab as Powertrain);
         return true;
       }),
-    [catalog, query, city, brand, minRange, maxWeekly, availableOnly, tab, t],
+    [catalog, query, city, brand, minRange, availableOnly, tab, t],
   );
 
   const reset = () => {
@@ -123,7 +121,6 @@ export function Vehicles() {
     setCity('all');
     setBrand('all');
     setMinRange(0);
-    setMaxWeekly(450);
     setAvailableOnly(false);
     setTab('all');
     setLoadMoreError(null);
@@ -178,25 +175,6 @@ export function Vehicles() {
             className="mt-3 w-full accent-action"
           />
           <p className="mt-1 text-[0.75rem] font-medium text-muted">{minRange} km</p>
-        </div>
-
-        <div>
-          <label htmlFor="filter-price" className="block text-2xs font-semibold text-ink">
-            {t('vehiclesPage.filterPrice')}
-          </label>
-          <input
-            id="filter-price"
-            type="range"
-            min={200}
-            max={450}
-            step={25}
-            value={maxWeekly}
-            onChange={(event) => setMaxWeekly(Number(event.target.value))}
-            className="mt-3 w-full accent-action"
-          />
-          <p className="mt-1 text-[0.75rem] font-medium text-muted">
-            {money(maxWeekly)} {t('common.perWeek')}
-          </p>
         </div>
 
         <Checkbox

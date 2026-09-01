@@ -1,4 +1,4 @@
-﻿{
+{
   "common": {
     "brand": "Novavolt",
     "live": "Métriques en temps réel",
@@ -220,7 +220,7 @@
     "satisfaction": "Taux de satisfaction des chauffeurs VTC"
   },
   "testimonials": {
-    "title": "Ils roulent déjà avec nous",
+    "title": "Ce que nos clients disent de nous",
     "subtitle": "Témoignages de démonstration.",
     "t1": {
       "quote": "Je fais mes quarts du soir sans penser à l'essence. Le tarif hebdomadaire est clair et la voiture était prête le jour prévu.",

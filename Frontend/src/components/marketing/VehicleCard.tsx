@@ -11,14 +11,10 @@ import { VehicleImage } from '../ui/VehicleImage';
 interface VehicleCardProps {
   vehicle: Vehicle;
   className?: string;
-  /** Weekly is the reference for drivers, daily for individuals. */
-  priceMode?: 'weekly' | 'daily';
 }
 
-export function VehicleCard({ vehicle, className, priceMode = 'weekly' }: VehicleCardProps) {
-  const { t, money } = useI18n();
-  const price = priceMode === 'weekly' ? vehicle.pricing.weekly : vehicle.pricing.daily;
-  const unit = priceMode === 'weekly' ? t('common.perWeek') : t('common.perDay');
+export function VehicleCard({ vehicle, className }: VehicleCardProps) {
+  const { t } = useI18n();
   const name = `${vehicle.brand} ${vehicle.model}`;
 
   return (
@@ -73,12 +69,7 @@ export function VehicleCard({ vehicle, className, priceMode = 'weekly' }: Vehicl
           </div>
         </dl>
 
-        <div className="mt-auto flex items-end justify-between gap-3 pt-4">
-          <p>
-            <span className="block text-[0.75rem] text-muted">{t('common.from')}</span>
-            <span className="font-display text-xl font-bold tracking-[-0.02em] text-ink">{money(price)}</span>
-            <span className="ml-1 text-[0.75rem] font-semibold text-muted">{unit}</span>
-          </p>
+        <div className="mt-auto flex justify-end pt-4">
           <Link
             to={`/vehicules/${vehicle.id}`}
             className="inline-flex items-center gap-1.5 rounded-pill border border-line px-3.5 py-2 text-2xs font-semibold text-ink transition-[border-color,color,background-color] duration-200 ease-signature hover:border-action hover:bg-action hover:text-white">

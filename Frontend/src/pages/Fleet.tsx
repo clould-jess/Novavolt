@@ -22,6 +22,7 @@ import { PageHero } from '../components/marketing/PageHero';
 export function Fleet() {
   const { t } = useI18n();
   const { showToast } = useToast();
+  const phoneHref = `tel:${t('common.phone').replace(/[^\d+]/g, '')}`;
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [formData, setFormData] = useState({
@@ -185,7 +186,11 @@ export function Fleet() {
                   <p className="mt-2 max-w-md text-sm leading-relaxed text-muted">
                     {t('fleetPage.successToastBody')}
                   </p>
-                  <Button type="button" variant="secondary" className="mt-6" onClick={handleNewRequest}>
+                  <Button href={phoneHref} className="mt-6 bg-emerald-600 text-white hover:bg-emerald-700">
+                    <PhoneIcon className="h-4 w-4" aria-hidden="true" />
+                    {t('contactPage.callCta')}
+                  </Button>
+                  <Button type="button" variant="secondary" className="mt-3" onClick={handleNewRequest}>
                     {t('common.newRequest')}
                   </Button>
                 </motion.div>

@@ -13,8 +13,8 @@ interface LiveCounterProps {
 }
 
 /**
- * Counts up from zero upon entering the viewport, then continues ticking in real-time
- * based on `ratePerSecond`. Formats numbers automatically for FR/EN locales.
+ * Counts up from zero upon entering the viewport, then updates at a calm, fixed interval.
+ * Formats numbers automatically for FR/EN locales.
  */
 export function LiveCounter({
   to,
@@ -56,18 +56,18 @@ export function LiveCounter({
     return () => cancelAnimationFrame(frame);
   }, [inView, reduced, to, durationMs]);
 
-  // Real-time ticking after initial entrance animation
+
+  // Continue with a small update every two seconds, after the entrance animation.
   useEffect(() => {
     if (!initialDone || ratePerSecond <= 0 || reduced) return undefined;
 
-    const intervalMs = 100;
+    const intervalMs = 2_000;
     const increment = ratePerSecond * (intervalMs / 1000);
-
-    const timer = setInterval(() => {
-      setCurrentValue((prev) => prev + increment);
+    const timer = window.setInterval(() => {
+      setCurrentValue((previous) => previous + increment);
     }, intervalMs);
 
-    return () => clearInterval(timer);
+    return () => window.clearInterval(timer);
   }, [initialDone, ratePerSecond, reduced]);
 
   // Format value with exact decimals and locale rules
