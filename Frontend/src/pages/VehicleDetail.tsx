@@ -206,21 +206,10 @@ export function VehicleDetail() {
           : t('vehicleDetail.reservationPendingBody'),
       });
     } catch (error) {
-      const isDateError =
-        error instanceof ApiError &&
-        error.status === 400 &&
-        error.message === 'Invalid reservation interval';
-
       showToast({
         tone: 'error',
-        title: isDateError
-          ? t('vehicleDetail.reservationDateErrorTitle')
-          : t('vehicleDetail.reservationErrorTitle'),
-        body: isDateError
-          ? t('vehicleDetail.reservationDateErrorBody')
-          : error instanceof ApiError
-            ? error.message
-            : t('vehicleDetail.reservationErrorBody'),
+        title: t('vehicleDetail.reservationErrorTitle'),
+        body: error instanceof ApiError ? error.message : t('vehicleDetail.reservationErrorBody'),
       });
     } finally {
       setReservationSubmitting(false);
@@ -426,37 +415,41 @@ export function VehicleDetail() {
                                 className="mt-1 w-full rounded-xl border border-line bg-white px-4 py-2.5 text-xs font-medium text-ink focus:border-action focus:outline-none"
                               />
                             </div>
-                            <div className="rounded-xl border border-line bg-soft px-4 py-3">
-                              <p className="text-2xs font-semibold text-muted">{t('vehicleDetail.reservationVehicle')}</p>
-                              <p className="mt-1 text-sm font-semibold text-ink">{name}</p>
+                            <div>
+                              <label className="block text-2xs font-semibold text-ink">
+                                {t('vehicleDetail.fieldRentalUse')}
+                              </label>
+                              <select
+                                required
+                                value={reservationForm.rentalUse}
+                                onChange={(event) =>
+                                  setReservationForm({
+                                    ...reservationForm,
+                                    rentalUse: event.target.value as 'PERSONAL' | 'RIDESHARE',
+                                  })
+                                }
+                                className="mt-1 w-full rounded-xl border border-line bg-white px-4 py-2.5 text-xs font-medium text-ink focus:border-action focus:outline-none"
+                              >
+                                <option value="PERSONAL">{t('vehicleDetail.rentalUsePersonal')}</option>
+                                <option value="RIDESHARE">{t('vehicleDetail.rentalUseRideshare')}</option>
+                              </select>
                             </div>
                           </div>
 
-                          <div className="grid gap-4 sm:grid-cols-2">
-                            <div>
-                              <label className="block text-2xs font-semibold text-ink">
-                                {t('vehicleDetail.fieldPickup')}
-                              </label>
-                              <input
-                                type="date"
-                                required
-                                value={start ?? ''}
-                                onChange={(event) => setStart(event.target.value || undefined)}
-                                className="mt-1 w-full rounded-xl border border-line bg-white px-4 py-2.5 text-xs font-medium text-ink focus:border-action focus:outline-none"
-                              />
-                            </div>
-                            <div>
-                              <label className="block text-2xs font-semibold text-ink">
-                                {t('vehicleDetail.fieldReturn')}
-                              </label>
-                              <input
-                                type="date"
-                                required
-                                value={end ?? ''}
-                                onChange={(event) => setEnd(event.target.value || undefined)}
-                                className="mt-1 w-full rounded-xl border border-line bg-white px-4 py-2.5 text-xs font-medium text-ink focus:border-action focus:outline-none"
-                              />
-                            </div>
+                          <div>
+                            <label className="block text-2xs font-semibold text-ink">
+                              {t('vehicleDetail.fieldPickupAddress')}
+                            </label>
+                            <input
+                              type="text"
+                              required
+                              minLength={5}
+                              maxLength={250}
+                              value={reservationForm.pickupAddress}
+                              onChange={(event) => setReservationForm({ ...reservationForm, pickupAddress: event.target.value })}
+                              placeholder="ex: 1234 Rue Sainte-Catherine, Montréal"
+                              className="mt-1 w-full rounded-xl border border-line bg-white px-4 py-2.5 text-xs font-medium text-ink focus:border-action focus:outline-none"
+                            />
                           </div>
 
                           <div>

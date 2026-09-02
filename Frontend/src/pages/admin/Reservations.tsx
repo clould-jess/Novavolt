@@ -1,4 +1,4 @@
-﻿import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Building2Icon, CheckCircle2Icon, Clock3Icon, MailIcon, PhoneIcon, RotateCcwIcon, SearchIcon, SendIcon, Trash2Icon, CarFrontIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useI18n } from '../../contexts/I18nContext';
@@ -102,6 +102,8 @@ export function AdminReservations() {
         item.name,
         item.email,
         item.phone,
+        item.pickupAddress ?? '',
+        item.rentalUse ?? '',
         item.message ?? '',
         item.status,
       ]
@@ -250,9 +252,28 @@ export function AdminReservations() {
                         {t('admin.reservations.vehicle')}
                       </div>
                       <p className="mt-2 text-sm font-medium text-ink">{requestVehicleLabel(item)}</p>
-                      <p className="mt-1 text-sm text-muted">
-                        {new Date(item.startAt).toLocaleDateString()} - {new Date(item.endAt).toLocaleDateString()}
-                      </p>
+                      {item.pickupAddress && (
+                        <p className="mt-2 text-xs text-body">
+                          <span className="font-semibold text-ink">{t('admin.reservations.pickupAddress')} : </span>
+                          <span>{item.pickupAddress}</span>
+                        </p>
+                      )}
+                      {item.rentalUse && (
+                        <div className="mt-1.5 flex items-center gap-2 text-xs text-body">
+                          <span className="font-semibold text-ink">{t('admin.reservations.rentalUse')} : </span>
+                          <Badge tone="info" size="sm">
+                            {item.rentalUse === 'PERSONAL'
+                              ? t('admin.reservations.rentalUsePersonal')
+                              : t('admin.reservations.rentalUseRideshare')}
+                          </Badge>
+                        </div>
+                      )}
+                      {item.startAt && item.endAt && (
+                        <p className="mt-2 text-xs text-muted">
+                          <span className="font-semibold text-ink">{t('admin.reservations.dates')} : </span>
+                          {new Date(item.startAt).toLocaleDateString()} - {new Date(item.endAt).toLocaleDateString()}
+                        </p>
+                      )}
                     </div>
 
                     <div className="rounded-xl border border-line bg-soft p-4">

@@ -97,10 +97,7 @@
     "signIn": "Sign in"
   },
   "cities": {
-    "montreal": "Montreal",
-    "montreal": "Montréal",
-    "montreal": "Montréal",
-    "montreal": "Montréal"
+    "montreal": "Montreal"
   },
   "powertrain": {
     "electric": "Electric",
@@ -285,15 +282,19 @@
   },
   "vehicleDetail": {
     "gallery": "Vehicle gallery",
-    "bookCta": "Request to book",
+    "bookCta": "Rent today",
     "reservationTitle": "Reservation request",
-    "reservationSubtitle": "Open the form, choose your dates, and send your request without creating an account.",
+    "reservationSubtitle": "Open the form and send your request without creating an account.",
     "reservationClose": "Close",
     "reservationSubmit": "Send request",
     "reservationVehicle": "Selected vehicle",
     "fieldName": "Full name",
     "fieldEmail": "Email address",
     "fieldPhone": "Phone",
+    "fieldPickupAddress": "Requested pickup address",
+    "fieldRentalUse": "Rental use type",
+    "rentalUsePersonal": "Personal use",
+    "rentalUseRideshare": "Rideshare / VTC Driver",
     "fieldPickup": "Pickup date",
     "fieldReturn": "Return date",
     "fieldMessage": "Message",
@@ -998,6 +999,11 @@
       "archiveLead": "Archive",
       "reopenLead": "Reopen",
       "vehicle": "Vehicle",
+      "pickupAddress": "Pickup address",
+      "rentalUse": "Rental use",
+      "rentalUsePersonal": "Personal use",
+      "rentalUseRideshare": "Rideshare / VTC Driver",
+      "dates": "Reservation dates",
       "message": "Message",
       "noMessage": "No message",
       "emailPending": "Email pending verification",

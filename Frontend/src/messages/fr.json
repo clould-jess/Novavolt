@@ -175,11 +175,26 @@
   "how": {
     "title": "Comment ça marche",
     "subtitle": "Quatre étapes, sans paperasse inutile.",
-    "s1": { "title": "Choisissez votre véhicule", "body": "Filtrez par ville, usage et autonomie, puis comparez les tarifs." },
-    "s2": { "title": "Envoyez votre demande", "body": "Sélectionnez vos dates et transmettez votre demande en quelques minutes." },
-    "s3": { "title": "Complétez votre dossier", "body": "Ajoutez vos documents en ligne. Notre équipe les vérifie rapidement." },
-    "s4": { "title": "Prenez la route", "body": "Signature du contrat, remise du véhicule et départ, chargé à bloc." },
-    "s5": { "title": "Créez votre compte", "body": "Un compte sécurisé pour suivre votre dossier, vos paiements et votre location." },
+    "s1": {
+      "title": "Choisissez votre véhicule",
+      "body": "Filtrez par ville, usage et autonomie, puis comparez les tarifs."
+    },
+    "s2": {
+      "title": "Envoyez votre demande",
+      "body": "Sélectionnez vos dates et transmettez votre demande en quelques minutes."
+    },
+    "s3": {
+      "title": "Complétez votre dossier",
+      "body": "Ajoutez vos documents en ligne. Notre équipe les vérifie rapidement."
+    },
+    "s4": {
+      "title": "Prenez la route",
+      "body": "Signature du contrat, remise du véhicule et départ, chargé à bloc."
+    },
+    "s5": {
+      "title": "Créez votre compte",
+      "body": "Un compte sécurisé pour suivre votre dossier, vos paiements et votre location."
+    },
     "tabsDriver": "Chauffeur professionnel",
     "tabsIndividual": "Particulier",
     "needTitle": "Ce dont vous aurez besoin",
@@ -202,11 +217,26 @@
   "benefits": {
     "title": "Pourquoi Novavolt",
     "subtitle": "Moins de frais variables, moins d'imprévus, plus de kilomètres utiles.",
-    "b1": { "title": "Pas de coût d'essence", "body": "La recharge remplace le plein : un poste de dépense plus stable et plus prévisible." },
-    "b2": { "title": "Entretien simplifié", "body": "Moins de pièces mobiles, entretien planifié et suivi par notre équipe." },
-    "b3": { "title": "Adapté aux plateformes", "body": "Des modèles choisis pour les critères d'admissibilité des plateformes de mobilité." },
-    "b4": { "title": "Options flexibles", "body": "Journée, semaine ou mois : vous ajustez selon votre volume de trajets." },
-    "b5": { "title": "Assistance et accompagnement", "body": "Un contact direct pour la route, l'entretien et vos questions administratives." }
+    "b1": {
+      "title": "Pas de coût d'essence",
+      "body": "La recharge remplace le plein : un poste de dépense plus stable et plus prévisible."
+    },
+    "b2": {
+      "title": "Entretien simplifié",
+      "body": "Moins de pièces mobiles, entretien planifié et suivi par notre équipe."
+    },
+    "b3": {
+      "title": "Adapté aux plateformes",
+      "body": "Des modèles choisis pour les critères d'admissibilité des plateformes de mobilité."
+    },
+    "b4": {
+      "title": "Options flexibles",
+      "body": "Journée, semaine ou mois : vous ajustez selon votre volume de trajets."
+    },
+    "b5": {
+      "title": "Assistance et accompagnement",
+      "body": "Un contact direct pour la route, l'entretien et vos questions administratives."
+    }
   },
   "stats": {
     "title": "L'Impact Écologique Novavolt",
@@ -282,9 +312,9 @@
   },
   "vehicleDetail": {
     "gallery": "Galerie du véhicule",
-    "bookCta": "Demander à réserver",
+    "bookCta": "Louer aujourd'hui",
     "reservationTitle": "Demande de réservation",
-    "reservationSubtitle": "Ouvrez le formulaire, choisissez vos dates, puis envoyez votre demande sans créer de compte.",
+    "reservationSubtitle": "Ouvrez le formulaire et envoyez votre demande sans créer de compte.",
     "reservationClose": "Fermer",
     "reservationSubmit": "Envoyer la demande",
     "reservationVehicle": "Véhicule sélectionné",
@@ -345,10 +375,22 @@
     "heroCta": "Voir les véhicules chauffeurs",
     "heroImageAlt": "Chauffeur professionnel au volant d'un véhicule électrique en ville",
     "advantagesTitle": "Ce que ça change pour vous",
-    "a1": { "title": "Coût au kilomètre plus stable", "body": "La recharge remplace l'essence : vos charges variables deviennent plus prévisibles." },
-    "a2": { "title": "Tarif transparent", "body": "Un montant hebdomadaire annoncé, sans frais cachés à la remise." },
-    "a3": { "title": "Disponibilité réelle", "body": "Le calendrier reflète les véhicules réellement libres dans votre ville." },
-    "a4": { "title": "Accompagnement", "body": "Un contact humain pour vos questions de dossier, d'entretien et de route." },
+    "a1": {
+      "title": "Coût au kilomètre plus stable",
+      "body": "La recharge remplace l'essence : vos charges variables deviennent plus prévisibles."
+    },
+    "a2": {
+      "title": "Tarif transparent",
+      "body": "Un montant hebdomadaire annoncé, sans frais cachés à la remise."
+    },
+    "a3": {
+      "title": "Disponibilité réelle",
+      "body": "Le calendrier reflète les véhicules réellement libres dans votre ville."
+    },
+    "a4": {
+      "title": "Accompagnement",
+      "body": "Un contact humain pour vos questions de dossier, d'entretien et de route."
+    },
     "eligibilityTitle": "Admissibilité aux plateformes",
     "eligibilityBody": "Nos véhicules sont sélectionnés pour correspondre aux critères habituels des plateformes de mobilité (année, nombre de places, état). Novavolt n'est affilié à aucune plateforme et ne garantit pas votre acceptation : les exigences finales relèvent de la plateforme.",
     "plansTitle": "Choisissez votre formule",
@@ -398,18 +440,48 @@
     "heroCta": "Voir les véhicules",
     "heroImageAlt": "Voiture électrique prête pour un départ de fin de semaine",
     "durationsTitle": "Choisissez votre durée",
-    "d1": { "title": "À la journée", "body": "Pour un rendez-vous, un déménagement léger ou un essai réel d'un véhicule électrique." },
-    "d2": { "title": "À la semaine", "body": "Pour les vacances, une fin de semaine prolongée ou un véhicule de remplacement." },
-    "d3": { "title": "Au mois", "body": "Pour un besoin temporaire prolongé, sans engagement de plusieurs années." },
+    "d1": {
+      "title": "À la journée",
+      "body": "Pour un rendez-vous, un déménagement léger ou un essai réel d'un véhicule électrique."
+    },
+    "d2": {
+      "title": "À la semaine",
+      "body": "Pour les vacances, une fin de semaine prolongée ou un véhicule de remplacement."
+    },
+    "d3": {
+      "title": "Au mois",
+      "body": "Pour un besoin temporaire prolongé, sans engagement de plusieurs années."
+    },
     "casesTitle": "Cas d'usage fréquents",
-    "u1": { "title": "Fin de semaine", "body": "Sortie hors de la ville, autonomie confortable et coffre pour les bagages." },
-    "u2": { "title": "Déplacement professionnel", "body": "Un véhicule propre et silencieux pour vos rendez-vous clients." },
-    "u3": { "title": "Découvrir l'électrique", "body": "Essayez plusieurs jours avant de considérer un achat." },
-    "u4": { "title": "Besoin temporaire", "body": "Voiture au garage ou déménagement : un véhicule le temps qu'il faut." },
+    "u1": {
+      "title": "Fin de semaine",
+      "body": "Sortie hors de la ville, autonomie confortable et coffre pour les bagages."
+    },
+    "u2": {
+      "title": "Déplacement professionnel",
+      "body": "Un véhicule propre et silencieux pour vos rendez-vous clients."
+    },
+    "u3": {
+      "title": "Découvrir l'électrique",
+      "body": "Essayez plusieurs jours avant de considérer un achat."
+    },
+    "u4": {
+      "title": "Besoin temporaire",
+      "body": "Voiture au garage ou déménagement : un véhicule le temps qu'il faut."
+    },
     "benefitsTitle": "Les avantages au quotidien",
-    "b1": { "title": "Conduite silencieuse", "body": "Moins de bruit, moins de vibrations, plus de confort en ville." },
-    "b2": { "title": "Économies d'énergie", "body": "Recharger coûte généralement moins qu'un plein équivalent." },
-    "b3": { "title": "Voitures modernes", "body": "Modèles récents, connectés et bien entretenus." },
+    "b1": {
+      "title": "Conduite silencieuse",
+      "body": "Moins de bruit, moins de vibrations, plus de confort en ville."
+    },
+    "b2": {
+      "title": "Économies d'énergie",
+      "body": "Recharger coûte généralement moins qu'un plein équivalent."
+    },
+    "b3": {
+      "title": "Voitures modernes",
+      "body": "Modèles récents, connectés et bien entretenus."
+    },
     "recommendedTitle": "Véhicules recommandés",
     "bookingTitle": "Réserver en trois temps",
     "faqTitle": "Questions des particuliers",
@@ -523,10 +595,22 @@
     "missionTitle": "Notre mission",
     "missionBody": "Offrir une location électrique claire, rapide et sans mauvaise surprise, avec un service humain à chaque étape.",
     "valuesTitle": "Nos valeurs",
-    "v1": { "title": "Simplicité", "body": "Un parcours court, des formulaires utiles seulement." },
-    "v2": { "title": "Mobilité propre", "body": "Une flotte 100 % électrifiée, entretenue sérieusement." },
-    "v3": { "title": "Transparence", "body": "Les prix, les conditions et les délais sont annoncés d'avance." },
-    "v4": { "title": "Service", "body": "Une équipe joignable, du premier appel au retour du véhicule." },
+    "v1": {
+      "title": "Simplicité",
+      "body": "Un parcours court, des formulaires utiles seulement."
+    },
+    "v2": {
+      "title": "Mobilité propre",
+      "body": "Une flotte 100 % électrifiée, entretenue sérieusement."
+    },
+    "v3": {
+      "title": "Transparence",
+      "body": "Les prix, les conditions et les délais sont annoncés d'avance."
+    },
+    "v4": {
+      "title": "Service",
+      "body": "Une équipe joignable, du premier appel au retour du véhicule."
+    },
     "territoriesTitle": "Territoires desservis",
     "territoriesBody": "Villes de démonstration. L'ajout de nouvelles régions se fait selon la demande.",
     "teamTitle": "L'équipe",
@@ -565,9 +649,15 @@
     "toc": "Sur cette page",
     "disclaimer": "Contenu de démonstration. Ce texte doit être révisé et validé par un professionnel du droit au Canada avant publication.",
     "updated": "Dernière mise à jour : 12 janvier 2026",
-    "terms": { "title": "Conditions d'utilisation" },
-    "privacy": { "title": "Politique de confidentialité" },
-    "cookies": { "title": "Politique de cookies" }
+    "terms": {
+      "title": "Conditions d'utilisation"
+    },
+    "privacy": {
+      "title": "Politique de confidentialité"
+    },
+    "cookies": {
+      "title": "Politique de cookies"
+    }
   },
   "auth": {
     "visualTitle": "La location électrique, sans friction.",
@@ -995,6 +1085,11 @@
       "archiveLead": "Archiver",
       "reopenLead": "Rouvrir",
       "vehicle": "Véhicule",
+      "pickupAddress": "Adresse de récupération",
+      "rentalUse": "Type d'utilisation",
+      "rentalUsePersonal": "Usage personnel",
+      "rentalUseRideshare": "Chauffeur VTC / Rideshare",
+      "dates": "Dates de réservation",
       "message": "Message",
       "noMessage": "Aucun message",
       "emailPending": "Email à vérifier",
@@ -1034,7 +1129,10 @@
       "rClose": "Clôture de la location",
       "rDeposit": "Traitement du dépôt"
     },
-    "rentals": { "title": "Locations actives", "subtitle": "Locations en cours et retours prévus." },
+    "rentals": {
+      "title": "Locations actives",
+      "subtitle": "Locations en cours et retours prévus."
+    },
     "finance": {
       "title": "Finance",
       "subtitle": "Factures, paiements, dépôts et remboursements.",

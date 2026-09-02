@@ -24,6 +24,8 @@ export interface ReservationRequestRecord extends CreateReservationRequestInput 
   createdAt: string;
   updatedAt: string;
   emailDelivered: boolean;
+  startAt?: string | null;
+  endAt?: string | null;
 }
 
 export interface ReservationRequestListResponse {
