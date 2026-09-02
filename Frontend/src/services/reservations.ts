@@ -8,8 +8,8 @@ export interface CreateReservationRequestInput {
   name: string;
   email: string;
   phone: string;
-  startAt: string;
-  endAt: string;
+  pickupAddress: string;
+  rentalUse: 'PERSONAL' | 'RIDESHARE';
   message?: string | null;
 }
 

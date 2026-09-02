@@ -70,6 +70,8 @@ export function VehicleDetail() {
     name: '',
     email: '',
     phone: '',
+    pickupAddress: '',
+    rentalUse: 'PERSONAL' as 'PERSONAL' | 'RIDESHARE',
     message: '',
   });
 
@@ -174,20 +176,7 @@ export function VehicleDetail() {
 
   const handleReservationSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!vehicle || !start || !end || reservationSubmitting) {
-      return;
-    }
-
-    const startDate = new Date(start);
-    const endDate = new Date(end);
-    if (Number.isNaN(startDate.getTime()) || Number.isNaN(endDate.getTime()) || startDate >= endDate) {
-      showToast({
-        tone: 'warn',
-        title: t('vehicleDetail.reservationDateErrorTitle'),
-        body: t('vehicleDetail.reservationDateErrorBody'),
-      });
-      return;
-    }
+    if (!vehicle || reservationSubmitting) { return; }
 
     const message = reservationForm.message.trim();
 
@@ -198,13 +187,13 @@ export function VehicleDetail() {
         name: reservationForm.name,
         email: reservationForm.email,
         phone: reservationForm.phone,
-        startAt: start,
-        endAt: end,
+        pickupAddress: reservationForm.pickupAddress,
+        rentalUse: reservationForm.rentalUse,
         message: message || undefined,
       });
 
       setReservationSubmitted(true);
-      setReservationForm({ name: '', email: '', phone: '', message: '' });
+      setReservationForm({ name: '', email: '', phone: '', pickupAddress: '', rentalUse: 'PERSONAL', message: '' });
       setStart(undefined);
       setEnd(undefined);
       showToast({
@@ -240,7 +229,7 @@ export function VehicleDetail() {
 
   const handleAnotherReservation = () => {
     setReservationSubmitted(false);
-    setReservationForm({ name: '', email: '', phone: '', message: '' });
+    setReservationForm({ name: '', email: '', phone: '', pickupAddress: '', rentalUse: 'PERSONAL', message: '' });
     setStart(undefined);
     setEnd(undefined);
     requestAnimationFrame(() => {
