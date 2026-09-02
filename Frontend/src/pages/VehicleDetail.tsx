@@ -9,8 +9,8 @@ import {
   CheckIcon,
   CheckCircle2Icon,
   GaugeIcon,
-  HeadphonesIcon,
   MapPinIcon,
+  PhoneIcon,
   ShieldCheckIcon,
   UsersIcon,
   WrenchIcon,
@@ -39,7 +39,6 @@ import type { Vehicle } from '../types';
 
 const included = [
   { key: 'vehicleDetail.included1', icon: WrenchIcon },
-  { key: 'vehicleDetail.included2', icon: HeadphonesIcon },
   { key: 'vehicleDetail.included3', icon: ShieldCheckIcon },
   { key: 'vehicleDetail.included4', icon: UsersIcon },
 ];
@@ -190,6 +189,8 @@ export function VehicleDetail() {
       return;
     }
 
+    const message = reservationForm.message.trim();
+
     setReservationSubmitting(true);
     try {
       const response = await createReservationRequest({
@@ -199,7 +200,7 @@ export function VehicleDetail() {
         phone: reservationForm.phone,
         startAt: start,
         endAt: end,
-        message: reservationForm.message,
+        message: message || undefined,
       });
 
       setReservationSubmitted(true);
@@ -216,15 +217,20 @@ export function VehicleDetail() {
           : t('vehicleDetail.reservationPendingBody'),
       });
     } catch (error) {
+      const isDateError =
+        error instanceof ApiError &&
+        error.status === 400 &&
+        error.message === 'Invalid reservation interval';
+
       showToast({
         tone: 'error',
-        title:
-          error instanceof ApiError && error.status === 400
-            ? t('vehicleDetail.reservationDateErrorTitle')
-            : t('vehicleDetail.reservationErrorTitle'),
-        body:
-          error instanceof ApiError && error.status === 400
-            ? t('vehicleDetail.reservationDateErrorBody')
+        title: isDateError
+          ? t('vehicleDetail.reservationDateErrorTitle')
+          : t('vehicleDetail.reservationErrorTitle'),
+        body: isDateError
+          ? t('vehicleDetail.reservationDateErrorBody')
+          : error instanceof ApiError
+            ? error.message
             : t('vehicleDetail.reservationErrorBody'),
       });
     } finally {
@@ -561,6 +567,7 @@ export function VehicleDetail() {
               <SectionTitle as="h2" variant={3} title={t('vehicleDetail.conditionsTitle')} />
               <dl className="mt-8 divide-y divide-line border-y border-line">
                 {[
+                  { label: t('vehicleDetail.conditionDeposit'), value: t('vehicleDetail.conditionDepositValue') },
                   { label: t('vehicleDetail.conditionDocs'), value: t('vehicleDetail.conditionDocsValue') },
                   { label: t('vehicleDetail.conditionMileage'), value: t('vehicleDetail.conditionMileageValue') },
                   { label: t('vehicleDetail.conditionCancel'), value: t('vehicleDetail.conditionCancelValue') },
@@ -596,7 +603,8 @@ export function VehicleDetail() {
                 {t('vehicleDetail.agencyTitle')}
               </h2>
               <div
-                className="mt-4 flex h-36 items-end rounded-xl border border-line bg-surface p-4"
+                className="mt-4 flex h-36 items-end rounded-xl border border-line bg-surface bg-cover bg-center p-4"
+                style={{ backgroundImage: 'url(/assets/images/location/montreal-location.jpg)' }}
                 role="img"
                 aria-label={t('contactPage.mapAlt')}
               >

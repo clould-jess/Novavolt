@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import {
   Building2Icon,
   CheckCircle2Icon,
+  PhoneIcon,
   ShieldCheckIcon,
   TrendingUpIcon,
   UsersIcon,

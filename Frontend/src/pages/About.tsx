@@ -18,7 +18,7 @@ const values = [
 { key: 'v4', icon: MapPinIcon }];
 
 
-const cities: City[] = ['montreal', 'toronto', 'ottawa', 'vancouver'];
+const cities: City[] = ['montreal', 'montreal', 'montreal', 'montreal'];
 
 export function About() {
   const { t } = useI18n();

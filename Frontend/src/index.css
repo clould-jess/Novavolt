@@ -33,6 +33,22 @@ body {
   font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
+
+/* Readability scale for the authenticated admin workspace and sign-in flow. */
+.nv-admin-surface .text-2xs,
+.nv-auth-surface .text-2xs {
+  font-size: 0.875rem;
+}
+.nv-admin-surface .text-xs,
+.nv-auth-surface .text-xs,
+.nv-admin-surface .text-\[0\.75rem\],
+.nv-auth-surface .text-\[0\.75rem\] {
+  font-size: 0.9375rem;
+}
+.nv-admin-surface .text-sm,
+.nv-auth-surface .text-sm {
+  font-size: 1rem;
+}
 *:focus-visible {
   outline: 2px solid var(--nv-action);
   outline-offset: 2px;

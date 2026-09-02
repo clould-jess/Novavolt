@@ -40,10 +40,8 @@ export const paymentStatusSeries = [
 
 
 export const cityPerformance = [
-{ city: 'montreal', revenue: 19840, occupancy: 82, vehicles: 14 },
-{ city: 'toronto', revenue: 14260, occupancy: 76, vehicles: 10 },
-{ city: 'ottawa', revenue: 7420, occupancy: 71, vehicles: 6 },
-{ city: 'vancouver', revenue: 4695, occupancy: 64, vehicles: 6 }];
+{ city: 'montreal', revenue: 46215, occupancy: 78, vehicles: 12 }
+];
 
 
 export const vehiclePerformance = [

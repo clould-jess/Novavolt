@@ -87,7 +87,7 @@ export function Pricing() {
     const vehicle = catalog.find((item) => item.id === vehicleId) ?? catalog[0];
     if (!vehicle) return 0;
     const days = Number(duration);
-    const cityFactor = city === 'toronto' || city === 'vancouver' ? 1.06 : 1;
+    const cityFactor = 1;
     if (days >= 28) return Math.round(vehicle.pricing.monthly * cityFactor);
     if (days >= 7) return Math.round(vehicle.pricing.weekly * (days / 7) * cityFactor);
     return Math.round(vehicle.pricing.daily * days * cityFactor);
@@ -240,9 +240,6 @@ export function Pricing() {
                     onChange={(event) => setCity(event.target.value as City)}
                     options={[
                       { value: 'montreal', label: t('cities.montreal') },
-                      { value: 'toronto', label: t('cities.toronto') },
-                      { value: 'ottawa', label: t('cities.ottawa') },
-                      { value: 'vancouver', label: t('cities.vancouver') },
                     ]}
                   />
                 </div>

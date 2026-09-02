@@ -52,7 +52,7 @@ export function AdminLayout() {
           onClick={onNavigate}
           className={({ isActive }) =>
             cn(
-              'flex items-center gap-2.5 rounded-lg px-3 py-2 text-[0.8125rem] font-semibold transition-colors duration-200 ease-signature',
+              'flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-base font-semibold transition-colors duration-200 ease-signature',
               isActive ? 'bg-white/10 text-white' : 'text-sky-100/65 hover:bg-white/5 hover:text-white',
             )
           }
@@ -65,19 +65,19 @@ export function AdminLayout() {
   );
 
   return (
-    <div className="flex min-h-screen w-full bg-soft">
+    <div className="nv-admin-surface flex min-h-screen w-full bg-soft">
       <aside className="sticky top-0 hidden h-screen w-60 shrink-0 flex-col overflow-y-auto border-r border-white/10 bg-ink p-3 lg:flex">
         <div className="px-2 py-2">
           <Logo variant="footer" />
         </div>
-        <p className="mt-4 px-3 text-[0.75rem] font-semibold uppercase tracking-wide text-sky-100/40">
+        <p className="mt-4 px-3 text-sm font-semibold uppercase tracking-wide text-sky-100/40">
           {t('admin.label')}
         </p>
         <div className="mt-2 flex-1">{renderNav()}</div>
         <button
           type="button"
           onClick={() => setLogoutOpen(true)}
-          className="mt-3 flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-[0.8125rem] font-semibold text-sky-100/65 transition-colors duration-200 hover:bg-white/5 hover:text-white"
+          className="mt-3 flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-base font-semibold text-sky-100/65 transition-colors duration-200 hover:bg-white/5 hover:text-white"
         >
           <LogOutIcon className="h-4 w-4" aria-hidden="true" />
           {t('common.signOut')}
@@ -162,7 +162,7 @@ export function AdminLayout() {
                 onClick={() => setOpen(false)}
               />
             </div>
-            <p className="mt-4 px-1 text-[0.75rem] font-semibold uppercase tracking-wide text-sky-100/40">
+            <p className="mt-4 px-1 text-sm font-semibold uppercase tracking-wide text-sky-100/40">
               {t('admin.label')}
             </p>
             <div className="mt-3 flex-1">{renderNav(() => setOpen(false))}</div>

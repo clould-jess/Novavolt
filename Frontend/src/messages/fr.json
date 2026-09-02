@@ -97,10 +97,7 @@
     "signIn": "Connexion"
   },
   "cities": {
-    "montreal": "Montréal",
-    "toronto": "Toronto",
-    "ottawa": "Ottawa",
-    "vancouver": "Vancouver"
+    "montreal": "Montréal"
   },
   "powertrain": {
     "electric": "Électrique",
@@ -194,7 +191,7 @@
   },
   "featured": {
     "title": "Véhicules vedettes",
-    "subtitle": "Une sélection de modèles disponibles cette semaine dans nos villes.",
+    "subtitle": "Une sélection de modèles disponibles cette semaine dans notre ville.",
     "filterAll": "Tous",
     "filterDrivers": "Chauffeurs",
     "filterIndividuals": "Particuliers",
@@ -230,12 +227,12 @@
     "t2": {
       "quote": "Louée pour un week-end à l'extérieur de la ville. Prise en main simple et l'équipe a répondu en moins d'une heure.",
       "name": "Julie L.",
-      "role": "Location week-end, Toronto"
+      "role": "Location week-end, Montréal"
     },
     "t3": {
       "quote": "Le dossier en ligne m'a pris vingt minutes. J'apprécie de voir mes paiements et mon contrat au même endroit.",
       "name": "Daniel O.",
-      "role": "Chauffeur Lyft, Ottawa"
+      "role": "Chauffeur Lyft, Montréal"
     }
   },
   "finalCta": {
@@ -281,7 +278,7 @@
     "emptyTitle": "Aucun véhicule ne correspond à vos filtres",
     "emptyBody": "Élargissez la ville, l'autonomie ou le budget pour voir plus de résultats.",
     "emptyCta": "Réinitialiser les filtres",
-    "cardCta": "Voir le véhicule"
+    "cardCta": "Louer aujourd'hui"
   },
   "vehicleDetail": {
     "gallery": "Galerie du véhicule",
@@ -320,7 +317,8 @@
     "included4": "Support client dédié",
     "suitedTitle": "Adapté à",
     "conditionsTitle": "Conditions de location",
-    "conditionDeposit": "Dépôt",
+    "conditionDeposit": "Garantie",
+    "conditionDepositValue": "1 000 $ remboursable à la fin du contrat",
     "conditionDocs": "Documents requis",
     "conditionDocsValue": "Permis valide, pièce d'identité, preuve d'adresse",
     "conditionMileage": "Politique de kilométrage",
@@ -519,7 +517,7 @@
   },
   "aboutPage": {
     "title": "Rendre l'électrique accessible à ceux qui roulent beaucoup.",
-    "subtitle": "Novavolt est une entreprise canadienne de location de véhicules électriques, née d'un constat simple : les coûts variables pèsent lourd sur ceux qui vivent de la route.",
+    "subtitle": "Novavolt propose la location de véhicules électriques au Canada, née d'un constat simple : les coûts variables pèsent lourd sur ceux qui vivent de la route.",
     "storyTitle": "Notre histoire",
     "storyBody": "Novavolt a démarré à Montréal avec quelques véhicules et une idée : réduire la friction entre un conducteur et une voiture électrique fiable. Aujourd'hui, notre flotte de démonstration couvre quatre villes canadiennes et sert autant les chauffeurs professionnels que les particuliers.",
     "missionTitle": "Notre mission",
@@ -1242,7 +1240,7 @@
     },
     "b3": {
       "title": "Guide Ultime de la Recharge Rapide (Niveau 3) pour Chauffeurs",
-      "excerpt": "Les meilleures bornes de recharge rapide à Montréal, Toronto et Ottawa pour ne jamais perdre de temps entre deux courses.",
+      "excerpt": "Les meilleures bornes de recharge rapide à Montréal, Montréal et Montréal pour ne jamais perdre de temps entre deux courses.",
       "content": "Pour un chauffeur VTC, le temps c'est de l'argent. Savoir où et quand recharger son véhicule électrique est la clé d'une journée de travail efficace. Les bornes de recharge rapide en courant continu (DCFC) permettent de passer de 20% à 80% de charge en seulement 25 à 35 minutes. Nous recommandons de planifier vos recharges durant vos pauses repas ou aux heures creuses entre les deux pics de demande VTC."
     }
   }

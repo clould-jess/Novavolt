@@ -6,7 +6,7 @@ export const mockMaintenance: MaintenanceOrder[] = [
 { id: 'mnt-002', vehicleId: 'nv-006', type: 'Entretien 60 000 km', status: 'planned', scheduledAt: '2026-08-22', cost: 280, assignee: 'Atelier Décarie' },
 { id: 'mnt-003', vehicleId: 'nv-002', type: 'Mise à jour logicielle', status: 'planned', scheduledAt: '2026-08-30', cost: 0, assignee: 'Équipe flotte' },
 { id: 'mnt-004', vehicleId: 'nv-001', type: 'Rotation des pneus', status: 'done', scheduledAt: '2026-07-14', cost: 120, assignee: 'Atelier Saint-Denis' },
-{ id: 'mnt-005', vehicleId: 'nv-005', type: 'Diagnostic batterie', status: 'planned', scheduledAt: '2026-09-05', cost: 190, assignee: 'Atelier Vancouver' },
+{ id: 'mnt-005', vehicleId: 'nv-005', type: 'Diagnostic batterie', status: 'planned', scheduledAt: '2026-09-05', cost: 190, assignee: 'Atelier Montréal' },
 { id: 'mnt-006', vehicleId: 'nv-004', type: 'Nettoyage complet', status: 'done', scheduledAt: '2026-08-02', cost: 90, assignee: 'Équipe flotte' }];
 
 

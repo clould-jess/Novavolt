@@ -98,9 +98,9 @@
   },
   "cities": {
     "montreal": "Montreal",
-    "toronto": "Toronto",
-    "ottawa": "Ottawa",
-    "vancouver": "Vancouver"
+    "montreal": "Montréal",
+    "montreal": "Montréal",
+    "montreal": "Montréal"
   },
   "powertrain": {
     "electric": "Electric",
@@ -230,12 +230,12 @@
     "t2": {
       "quote": "Rented for a weekend out of town. Easy handover and the team answered in under an hour.",
       "name": "Julie L.",
-      "role": "Weekend rental, Toronto"
+      "role": "Weekend rental, Montréal"
     },
     "t3": {
       "quote": "The online file took me twenty minutes. I like seeing my payments and contract in one place.",
       "name": "Daniel O.",
-      "role": "Lyft driver, Ottawa"
+      "role": "Lyft driver, Montréal"
     }
   },
   "finalCta": {
@@ -281,7 +281,7 @@
     "emptyTitle": "No vehicle matches your filters",
     "emptyBody": "Widen the city, range or budget to see more results.",
     "emptyCta": "Reset filters",
-    "cardCta": "View vehicle"
+    "cardCta": "Rent today"
   },
   "vehicleDetail": {
     "gallery": "Vehicle gallery",
@@ -320,7 +320,8 @@
     "included4": "Dedicated customer support",
     "suitedTitle": "Suited to",
     "conditionsTitle": "Rental conditions",
-    "conditionDeposit": "Deposit",
+    "conditionDeposit": "Security deposit",
+    "conditionDepositValue": "$1,000 refundable at the end of the contract",
     "conditionDocs": "Required documents",
     "conditionDocsValue": "Valid licence, photo ID, proof of address",
     "conditionMileage": "Mileage policy",
@@ -519,7 +520,7 @@
   },
   "aboutPage": {
     "title": "Making electric accessible to those who drive the most.",
-    "subtitle": "Novavolt is a Canadian electric vehicle rental company, born from a simple observation: variable costs weigh heavily on those who live on the road.",
+    "subtitle": "Novavolt provides electric vehicle rentals in Canada, born from a simple observation: variable costs weigh heavily on those who live on the road.",
     "storyTitle": "Our story",
     "storyBody": "Novavolt started in Montreal with a handful of vehicles and one idea: reduce the friction between a driver and a reliable electric car. Today our demo fleet covers four Canadian cities and serves professional drivers as much as individuals.",
     "missionTitle": "Our mission",
@@ -1242,7 +1243,7 @@
     },
     "b3": {
       "title": "Ultimate Level 3 Fast Charging Guide for Rideshare Drivers",
-      "excerpt": "Top fast-charging stations in Montreal, Toronto, and Ottawa to keep you earning without downtime.",
+      "excerpt": "Top fast-charging stations in Montreal, Montréal, and Montréal to keep you earning without downtime.",
       "content": "For a rideshare driver, time is money. Knowing where and when to charge your electric vehicle is key to a seamless workday. DC fast chargers allow charging from 20% to 80% in just 25 to 35 minutes during meal breaks or off-peak hours."
     }
   }

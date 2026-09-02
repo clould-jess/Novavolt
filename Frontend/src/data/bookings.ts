@@ -23,7 +23,7 @@ export const mockBookings: Booking[] = [
   startDate: '2026-08-21',
   endDate: '2026-08-24',
   plan: 'daily',
-  city: 'toronto',
+  city: 'montreal',
   status: 'pending',
   total: 285,
   createdAt: '2026-08-13'
@@ -36,7 +36,7 @@ export const mockBookings: Booking[] = [
   startDate: '2026-08-26',
   endDate: '2026-09-09',
   plan: 'weekly',
-  city: 'ottawa',
+  city: 'montreal',
   status: 'pending',
   total: 758,
   createdAt: '2026-08-14'
@@ -49,7 +49,7 @@ export const mockBookings: Booking[] = [
   startDate: '2026-07-11',
   endDate: '2026-07-18',
   plan: 'weekly',
-  city: 'vancouver',
+  city: 'montreal',
   status: 'completed',
   total: 299,
   createdAt: '2026-07-02'
@@ -105,7 +105,7 @@ export const mockRentals: Rental[] = [
   startDate: '2026-08-14',
   endDate: '2026-08-21',
   stage: 'returnDue',
-  pickupAddress: '188 King Street West, Toronto, ON',
+  pickupAddress: '188 King Street West, Montréal, ON',
   chargeAtPickup: 100,
   odometerAtPickup: 31025,
   weeklyRate: 399

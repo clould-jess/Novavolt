@@ -33,7 +33,7 @@ export function Vehicles() {
   const [loadMoreError, setLoadMoreError] = useState<string | null>(null);
   const [tab, setTab] = useState<Tab>('all');
   const [query, setQuery] = useState('');
-  const [city, setCity] = useState<City | 'all'>((params.get('ville') as City) ?? 'all');
+  const [city, setCity] = useState<City>('montreal');
   const [brand, setBrand] = useState('all');
   const [minRange, setMinRange] = useState(0);
   const [availableOnly, setAvailableOnly] = useState(false);
@@ -105,7 +105,7 @@ export function Vehicles() {
       catalog.filter((vehicle) => {
         const label = `${vehicle.brand} ${vehicle.model} ${t(`cities.${vehicle.city}`)}`.toLowerCase();
         if (query && !label.includes(query.toLowerCase())) return false;
-        if (city !== 'all' && vehicle.city !== city) return false;
+        if (vehicle.city !== city) return false;
         if (brand !== 'all' && vehicle.brand !== brand) return false;
         if (vehicle.rangeKm < minRange) return false;
         if (availableOnly && vehicle.status !== 'available') return false;
@@ -118,7 +118,7 @@ export function Vehicles() {
 
   const reset = () => {
     setQuery('');
-    setCity('all');
+    setCity('montreal');
     setBrand('all');
     setMinRange(0);
     setAvailableOnly(false);
@@ -141,11 +141,7 @@ export function Vehicles() {
           value={city}
           onChange={(event) => setCity(event.target.value as City | 'all')}
           options={[
-            { value: 'all', label: t('common.allCities') },
             { value: 'montreal', label: t('cities.montreal') },
-            { value: 'toronto', label: t('cities.toronto') },
-            { value: 'ottawa', label: t('cities.ottawa') },
-            { value: 'vancouver', label: t('cities.vancouver') },
           ]}
         />
 

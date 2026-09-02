@@ -18,7 +18,7 @@ export function AuthLayout({ title, subtitle, children, footer }: AuthLayoutProp
   const { t } = useI18n();
 
   return (
-    <div className="flex min-h-screen w-full bg-white">
+    <div className="nv-auth-surface flex min-h-screen w-full bg-white">
       {/* Premium EV visual — desktop only */}
       <aside className="relative hidden w-[42%] shrink-0 overflow-hidden bg-ink lg:block">
         <VehicleImage src={images.authVisual} alt={t('auth.visualAlt')} className="absolute inset-0 h-full w-full" />

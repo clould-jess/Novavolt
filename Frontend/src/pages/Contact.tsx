@@ -14,7 +14,7 @@ import { Select } from '../components/ui/Select';
 import { Textarea } from '../components/ui/Textarea';
 import { PageHero } from '../components/marketing/PageHero';
 import { createContactMessage } from '../services/contact';
-const montrealLocationImage = '/assets/images/montreal-location.jpg';
+const montrealLocationImage = '/assets/images/location/montreal-location.jpg';
 
 export function Contact() {
   const { t, locale } = useI18n();

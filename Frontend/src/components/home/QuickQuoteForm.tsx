@@ -39,10 +39,7 @@ export function QuickQuoteForm({ className }: QuickQuoteFormProps) {
           value={city}
           onChange={(event) => setCity(event.target.value)}
           options={[
-          { value: 'montreal', label: t('cities.montreal') },
-          { value: 'toronto', label: t('cities.toronto') },
-          { value: 'ottawa', label: t('cities.ottawa') },
-          { value: 'vancouver', label: t('cities.vancouver') }]
+          { value: 'montreal', label: t('cities.montreal') },]
           } />
         
         <Select

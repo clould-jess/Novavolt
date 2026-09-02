@@ -4,12 +4,12 @@ import { SectionTitle } from '../ui/SectionTitle';
 import { TestimonialCard } from '../ui/TestimonialCard';
 
 const testimonials = [
-  { name: 'Sophie Martin', role: 'Chauffeuse VTC · Montréal', rating: 5, photo: 'https://placehold.co/160x160/E0F2FE/0F3B5A?text=SM', quote: 'Service super simple et voiture impeccable. Je peux travailler sereinement toute la semaine.' },
-  { name: 'Marc Tremblay', role: 'Client particulier · Laval', rating: 5, photo: 'https://placehold.co/160x160/DBEAFE/0F3B5A?text=MT', quote: 'La réservation a été rapide et l’équipe a pris le temps de tout m’expliquer.' },
-  { name: 'Aïcha Diallo', role: 'Chauffeuse · Longueuil', rating: 5, photo: 'https://placehold.co/160x160/E0E7FF/0F3B5A?text=AD', quote: 'Une expérience fluide du début à la fin. La voiture était prête exactement comme prévu.' },
-  { name: 'Olivia Carter', role: 'Rideshare driver · Toronto', rating: 5, photo: 'https://placehold.co/160x160/ECFDF5/0F3B5A?text=OC', quote: 'The team was responsive, helpful and made the whole process feel effortless.' },
-  { name: 'Daniel Wong', role: 'Weekend renter · Ottawa', rating: 5, photo: 'https://placehold.co/160x160/FEF3C7/0F3B5A?text=DW', quote: 'Clean vehicle, clear communication and a great experience for our weekend trip.' },
-  { name: 'Emma Johnson', role: 'Delivery driver · Vancouver', rating: 5, photo: 'https://placehold.co/160x160/FCE7F3/0F3B5A?text=EJ', quote: 'I was on the road quickly and support was there whenever I had a question.' },
+  { name: 'Sophie Martin', role: 'Chauffeuse VTC · Montréal', rating: 5, photo: '/assets/images/testimonials/sophie-martin.jpg', quote: 'Service super simple et voiture impeccable. Je peux travailler sereinement toute la semaine.' },
+  { name: 'Marc Tremblay', role: 'Client particulier · Montréal', rating: 5, photo: '/assets/images/testimonials/marc-tremblay.jpg', quote: 'La réservation a été rapide et l’équipe a pris le temps de tout m’expliquer.' },
+  { name: 'Aïcha Diallo', role: 'Chauffeuse · Montréal', rating: 5, photo: '/assets/images/testimonials/aicha-diallo.jpg', quote: 'Une expérience fluide du début à la fin. La voiture était prête exactement comme prévu.' },
+  { name: 'Olivia Carter', role: 'Rideshare driver · Montréal', rating: 5, photo: '/assets/images/testimonials/olivia-carter.jpg', quote: 'The team was responsive, helpful and made the whole process feel effortless.' },
+  { name: 'Daniel Wong', role: 'Weekend renter · Montréal', rating: 5, photo: '/assets/images/testimonials/daniel-wong.jpg', quote: 'Clean vehicle, clear communication and a great experience for our weekend trip.' },
+  { name: 'Emma Johnson', role: 'Delivery driver · Montréal', rating: 5, photo: '/assets/images/testimonials/emma-johnson.jpg', quote: 'I was on the road quickly and support was there whenever I had a question.' },
 ] as const;
 
 const AUTO_ADVANCE_MS = 5_000;
