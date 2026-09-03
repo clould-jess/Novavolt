@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { XIcon } from 'lucide-react';
 import { useI18n } from '../../contexts/I18nContext';
@@ -27,10 +28,10 @@ export function Modal({ open, onClose, title, description, children, footer }: M
     return () => document.removeEventListener('keydown', onKey);
   }, [open, onClose]);
 
-  return (
+  return createPortal(
     <AnimatePresence>
       {open &&
-      <div className="fixed inset-0 z-[80] flex items-end justify-center p-4 sm:items-center">
+      <div className="fixed inset-0 z-[100] flex items-end justify-center p-4 sm:items-center">
           <motion.div
           className="absolute inset-0 bg-ink/45"
           initial={{ opacity: 0 }}
@@ -61,6 +62,6 @@ export function Modal({ open, onClose, title, description, children, footer }: M
           </motion.div>
         </div>
       }
-    </AnimatePresence>);
+    </AnimatePresence>, document.body);
 
 }

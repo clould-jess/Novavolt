@@ -447,7 +447,7 @@ export function VehicleDetail() {
                               maxLength={250}
                               value={reservationForm.pickupAddress}
                               onChange={(event) => setReservationForm({ ...reservationForm, pickupAddress: event.target.value })}
-                              placeholder="ex: 1234 Rue Sainte-Catherine, Montréal"
+                              placeholder={t('vehicleDetail.fieldPickupAddressPlaceholder')}
                               className="mt-1 w-full rounded-xl border border-line bg-white px-4 py-2.5 text-xs font-medium text-ink focus:border-action focus:outline-none"
                             />
                           </div>

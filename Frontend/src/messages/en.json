@@ -280,6 +280,7 @@
     "fieldEmail": "Email address",
     "fieldPhone": "Phone",
     "fieldPickupAddress": "Requested pickup address",
+    "fieldPickupAddressPlaceholder": "e.g. 1234 Sainte-Catherine Street, Montréal",
     "fieldRentalUse": "Rental use type",
     "rentalUsePersonal": "Personal use",
     "rentalUseRideshare": "Rideshare / VTC Driver",
