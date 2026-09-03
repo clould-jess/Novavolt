@@ -36,8 +36,9 @@ export function Navbar() {
     setActiveDropdown(null);
   }, [location.pathname]);
 
-  const transparent = isHome && !scrolled;
-  const tone = transparent ? 'light' : 'dark';
+  // Hero has a clean white background, so navbar retains full contrast
+  const transparent = false;
+  const tone = 'dark';
 
   return (
     <header

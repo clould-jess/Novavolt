@@ -47,5 +47,41 @@ export const mockBlogPosts: BlogPost[] = [
     readTime: '4 min',
     image: 'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?auto=format&fit=crop&w=1200&q=80',
     author: 'Sophie Lavoie'
+  },
+  {
+    id: 'b4',
+    slug: 'rentabiliser-son-vehicule-sur-novavolt',
+    titleKey: 'blog.b4.title',
+    excerptKey: 'blog.b4.excerpt',
+    contentKey: 'blog.b4.content',
+    category: 'rentability',
+    date: '2026-07-15',
+    readTime: '7 min',
+    image: 'https://images.unsplash.com/photo-1554744512-d6c603f27c54?auto=format&fit=crop&w=1200&q=80',
+    author: 'Jean-Philippe Gagnon'
+  },
+  {
+    id: 'b5',
+    slug: 'choisir-entre-tesla-model-3-et-model-y',
+    titleKey: 'blog.b5.title',
+    excerptKey: 'blog.b5.excerpt',
+    contentKey: 'blog.b5.content',
+    category: 'tips',
+    date: '2026-07-01',
+    readTime: '5 min',
+    image: 'https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=1200&q=80',
+    author: 'Équipe Novavolt'
+  },
+  {
+    id: 'b6',
+    slug: 'subventions-et-incitatifs-ev-canada-2026',
+    titleKey: 'blog.b6.title',
+    excerptKey: 'blog.b6.excerpt',
+    contentKey: 'blog.b6.content',
+    category: 'ev',
+    date: '2026-06-18',
+    readTime: '4 min',
+    image: 'https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1200&q=80',
+    author: 'Sophie Lavoie'
   }
 ];

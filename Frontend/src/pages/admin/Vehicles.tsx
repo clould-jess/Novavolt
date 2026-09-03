@@ -9,12 +9,14 @@ import {
   PlusIcon,
   RefreshCcwIcon,
   SearchIcon,
+  Trash2Icon,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useI18n } from '../../contexts/I18nContext';
 import { useToast } from '../../contexts/ToastContext';
 import {
   listStaffVehicles,
+  deleteVehicle,
   updateVehicleStatus,
   type AdminVehicle,
   type AdminVehiclePowertrain,
@@ -29,6 +31,7 @@ import { PageHeading } from '../../components/ui/PageHeading';
 import { Select } from '../../components/ui/Select';
 import { StatusBadge } from '../../components/ui/StatusBadge';
 import { VehicleImage } from '../../components/ui/VehicleImage';
+import { Modal } from '../../components/ui/Modal';
 
 const statusOptions: Array<{ value: AdminVehicleStatus | 'ALL'; label: string }> = [
   { value: 'ALL', label: 'admin.fleet.allStatuses' },
@@ -82,6 +85,8 @@ export function AdminVehicles() {
   const [powertrainFilter, setPowertrainFilter] = useState<AdminVehiclePowertrain | 'ALL'>('ALL');
   const [search, setSearch] = useState('');
   const [pendingStatusById, setPendingStatusById] = useState<Record<string, AdminVehicleStatus | null>>({});
+  const [deleteTarget, setDeleteTarget] = useState<AdminVehicle | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const stats = useMemo(() => {
     const available = items.filter((item) => item.status === 'AVAILABLE').length;
@@ -135,6 +140,21 @@ export function AdminVehicles() {
     } finally {
       setPendingStatusById((current) => ({ ...current, [vehicleId]: null }));
     }
+  };
+
+  const removeVehicle = async () => {
+    if (!deleteTarget || deleting) return;
+    setDeleting(true);
+    try {
+      await deleteVehicle(deleteTarget.id);
+      setItems((current) => current.filter((vehicle) => vehicle.id !== deleteTarget.id));
+      setDeleteTarget(null);
+      showToast({ tone: 'success', title: 'Véhicule supprimé avec succès.' });
+    } catch (error) {
+      const status = typeof error === 'object' && error && 'status' in error ? Number((error as { status: number }).status) : 0;
+      const messages: Record<number, string> = { 401: 'Votre session a expiré. Veuillez vous reconnecter.', 403: 'Vous n’avez pas les permissions nécessaires.', 404: 'Ce véhicule n’existe plus.', 409: 'Ce véhicule est encore utilisé par des données métier et ne peut pas être supprimé.', 503: 'Le service d’images est temporairement indisponible. Le véhicule n’a pas été supprimé.' };
+      showToast({ tone: 'error', title: messages[status] ?? 'Une erreur est survenue. Veuillez réessayer.' });
+    } finally { setDeleting(false); }
   };
 
   useEffect(() => {
@@ -388,7 +408,7 @@ export function AdminVehicles() {
                             onClick={() => navigate(`/admin/vehicules/${vehicle.id}/modifier`)}
                           >
                             {t('admin.fleet.cardEdit')}
-                          </Button>
+                          </Button>                          <Button variant="danger" size="sm" iconLeft={<Trash2Icon className="h-4 w-4" />} disabled={pendingStatus !== null} onClick={() => setDeleteTarget(vehicle)}>Supprimer</Button>
                         </div>
                       </div>
                     </div>
@@ -398,7 +418,9 @@ export function AdminVehicles() {
             </div>
           )}
         </div>
-      </Card>
+      </Card>      <Modal open={Boolean(deleteTarget)} onClose={() => !deleting && setDeleteTarget(null)} title="Supprimer ce véhicule ?" description="Cette action est irréversible. Voulez-vous vraiment supprimer ce véhicule ?" footer={<><Button variant="secondary" disabled={deleting} onClick={() => setDeleteTarget(null)}>Annuler</Button><Button variant="danger" loading={deleting} onClick={() => void removeVehicle()}>Supprimer</Button></>}>
+        {deleteTarget && <p className="rounded-xl bg-soft p-3 text-sm text-body"><strong className="text-ink">{deleteTarget.make} {deleteTarget.model}</strong> · {deleteTarget.plate}</p>}
+      </Modal>
     </div>
   );
 }

@@ -43,6 +43,7 @@ import { AdminVehicleWizardPage } from './pages/admin/VehicleWizardPage';
 import { AdminComingSoon } from './pages/admin/ComingSoon';
 import { AdminNotifications } from './pages/admin/Notifications';
 import { SecurityActivity } from './pages/admin/SecurityActivity';
+import { AdminRentalRequests } from './pages/admin/RentalRequests';
 
 import { Fleet } from './pages/Fleet';
 import { Blog } from './pages/Blog';
@@ -140,6 +141,7 @@ export function App() {
                     <Route path="vehicules/:id/modifier" element={<AdminVehicleWizardPage />} />
                     <Route path="calendrier" element={<AdminComingSoon />} />
                     <Route path="reservations" element={<AdminReservations />} />
+                    <Route path="demandes-location" element={<AdminRentalRequests />} />
                     <Route path="locations" element={<AdminComingSoon />} />
                     <Route path="contrats" element={<AdminComingSoon />} />
                     <Route path="paiements" element={<AdminComingSoon />} />

@@ -71,12 +71,12 @@
   },
   "nav": {
     "home": "Home",
-    "vehicles": "Vehicles",
-    "solutions": "Solutions & Offers",
+    "vehicles": "Our Cars",
+    "solutions": "Solutions",
     "resources": "Resources & Guides",
     "drivers": "For Rideshare Drivers",
     "individuals": "For Individuals",
-    "fleet": "Fleet B2B",
+    "fleet": "Car Sharing",
     "blog": "Blog",
     "howItWorks": "How it works",
     "pricing": "Pricing",
@@ -86,7 +86,7 @@
     "sub": {
       "driversDesc": "Uber & Lyft ready vehicles with weekly rate.",
       "individualsDesc": "Daily, weekend or monthly electric rental.",
-      "fleetDesc": "List your EV vehicles for turn-key rental management.",
+      "fleetDesc": "Share your EV vehicle and generate effortless income.",
       "howItWorksDesc": "Simple 3-step path from reservation to keys.",
       "pricingDesc": "Transparent weekly plans with no surprises.",
       "blogDesc": "Profitability guides, tips and charging advice.",
@@ -120,28 +120,18 @@
     "unavailable": "Unavailable"
   },
   "hero": {
-    "title": "Go electric. Drive further.",
-    "subtitle": "Reliable electric vehicles for professional drivers and individuals across Canada.",
+    "title": "Flexible Rental Cars, Ready for Uber and Lyft*",
+    "titleLine1": "Flexible",
+    "titleLine2": "rental cars,",
+    "titleLine3": "Ready for",
+    "titleLine4": "Uber and",
+    "subtitle": "We offer a premium driving experience, built around trust, comfort, and style. Start your driving career in Canada today.",
+    "ctaRent": "RENT TODAY",
+    "ctaCars": "VIEW CARS",
+    "disclaimer": "* Terms and conditions apply",
     "ctaPrimary": "Browse vehicles",
     "ctaSecondary": "I drive for Uber/Lyft",
-    "imageAlt": "Modern electric vehicle on a Canadian city road",
-    "reassurance": {
-      "support": "Roadside support",
-      "maintenance": "Maintenance",
-      "insurance": "Insurance available",
-      "booking": "Simple booking"
-    },
-    "quote": {
-      "title": "Check availability",
-      "city": "City",
-      "type": "Rental type",
-      "start": "Pickup date",
-      "end": "Return date",
-      "cta": "See availability",
-      "typeDaily": "Daily",
-      "typeWeekly": "Weekly",
-      "typeMonthly": "Monthly"
-    }
+    "imageAlt": "Modern electric rental car for Uber and Lyft drivers in Canada"
   },
   "trust": {
     "title": "Built for drivers and for everyday needs.",
@@ -1249,8 +1239,23 @@
     },
     "b3": {
       "title": "Ultimate Level 3 Fast Charging Guide for Rideshare Drivers",
-      "excerpt": "Top fast-charging stations in Montreal, Montréal, and Montréal to keep you earning without downtime.",
+      "excerpt": "Top fast-charging stations in Montreal and surrounding areas to keep you earning without downtime.",
       "content": "For a rideshare driver, time is money. Knowing where and when to charge your electric vehicle is key to a seamless workday. DC fast chargers allow charging from 20% to 80% in just 25 to 35 minutes during meal breaks or off-peak hours."
+    },
+    "b4": {
+      "title": "How to Monetize Your EV with Novavolt Car Sharing",
+      "excerpt": "Place your unused EV in turn-key rental management and earn hassle-free recurring passive income.",
+      "content": "Do you own an EV sitting idle in your driveway? Through Novavolt's Car Sharing program, entrust your vehicle to qualified, vetted drivers. We handle insurance, routine maintenance, and customer support so you collect guaranteed monthly income."
+    },
+    "b5": {
+      "title": "Tesla Model 3 vs Model Y: Which One is Best for Rideshare?",
+      "excerpt": "In-depth comparison of cargo space, passenger comfort, and weekly operating costs.",
+      "content": "Tesla Model 3 and Model Y are top choices for Uber & Lyft drivers in Canada. While Model 3 delivers unmatched energy efficiency and lower rental cost, Model Y shines with spacious hatchback cargo and higher winter ground clearance."
+    },
+    "b6": {
+      "title": "EV Rebates and Incentives in Canada (2026 Update)",
+      "excerpt": "Comprehensive overview of federal and provincial grants to accelerate your transition to zero-emission mobility.",
+      "content": "Canadian federal and provincial governments offer generous programs to boost EV adoption. From purchase rebates to home charger installation incentives, explore all available financial aid in 2026."
     }
   }
 }

@@ -7,12 +7,13 @@ import { FeaturedVehicles } from '../components/home/FeaturedVehicles';
 import { Hero } from '../components/home/Hero';
 import { HowItWorksSection } from '../components/home/HowItWorksSection';
 import { StatsSection } from '../components/home/StatsSection';
-import { TrustBar } from '../components/home/TrustBar';
+
 import { TestimonialsSection } from '../components/home/TestimonialsSection';
 import { CtaBanner } from '../components/marketing/CtaBanner';
 import { FaqSection } from '../components/marketing/FaqSection';
+import { RentalRequestPage } from './RentalRequest';
 
-import { SavingsCalculator } from '../components/marketing/SavingsCalculator';
+
 
 export function Home() {
   const { t } = useI18n();
@@ -20,17 +21,14 @@ export function Home() {
   return (
     <>
       <Hero />
-      <TrustBar />
+
       <AudienceSection />
       <HowItWorksSection />
       <FeaturedVehicles />
       <BenefitsSection />
-      <section className="bg-slate-50 px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
-        <div className="mx-auto max-w-content">
-          <SavingsCalculator />
-        </div>
-      </section>
+
       <StatsSection />
+      <RentalRequestPage />
       <TestimonialsSection />
       <FaqSection
         title={t('faqPage.title')}

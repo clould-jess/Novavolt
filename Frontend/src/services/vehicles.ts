@@ -204,3 +204,8 @@ export async function deleteVehiclePhoto(vehicleId: string, photoId: string) {
 export async function getVehiclePhotoDownloadUrl(vehicleId: string, photoId: string) {
   return apiRequest<PhotoDownloadResponse>(`/vehicles/${vehicleId}/photos/${photoId}`, {}, getToken());
 }
+
+export function deleteVehicle(id: string): Promise<{ ok: true }> {
+  return apiRequest<{ ok: true }>(`/vehicles/${id}`, { method: 'DELETE' }, getToken());
+}
+

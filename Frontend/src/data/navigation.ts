@@ -1,7 +1,7 @@
 import {
   AlertTriangleIcon,
   // BanknoteIcon,
-  // BookOpenIcon,
+  BookOpenIcon,
   Building2Icon,
   // CalendarDaysIcon,
   CarFrontIcon,
@@ -50,15 +50,8 @@ export const publicNav: PublicNavItem[] = [
     to: '/vehicules'
   },
   {
-    labelKey: 'nav.solutions',
-    children: [
-      {
-        labelKey: 'nav.fleet',
-        descKey: 'nav.sub.fleetDesc',
-        to: '/flotte',
-        icon: Building2Icon
-      }
-    ]
+    labelKey: 'nav.fleet',
+    to: '/flotte'
   },
   {
     labelKey: 'nav.resources',
@@ -69,12 +62,12 @@ export const publicNav: PublicNavItem[] = [
         to: '/comment-ca-marche',
         icon: HelpCircleIcon
       },
-      // {
-      //   labelKey: 'nav.blog',
-      //   descKey: 'nav.sub.blogDesc',
-      //   to: '/blogue',
-      //   icon: BookOpenIcon
-      // },
+      {
+        labelKey: 'nav.blog',
+        descKey: 'nav.sub.blogDesc',
+        to: '/blogue',
+        icon: BookOpenIcon
+      },
       {
         labelKey: 'nav.faq',
         descKey: 'nav.sub.faqDesc',
@@ -116,6 +109,7 @@ export const adminNav: NavItem[] = [
   // { labelKey: 'admin.nav.customers', to: '/admin/clients', icon: UsersIcon },
   { labelKey: 'admin.nav.applications', to: '/admin/dossiers', icon: FolderOpenIcon },
   { labelKey: 'admin.nav.vehicles', to: '/admin/vehicules', icon: CarFrontIcon },
+  { labelKey: 'Demandes de location', to: '/admin/demandes-location', icon: ClipboardListIcon },
   // { labelKey: 'admin.nav.calendar', to: '/admin/calendrier', icon: CalendarDaysIcon },
   { labelKey: 'admin.nav.bookings', to: '/admin/reservations', icon: ClipboardListIcon },
   // { labelKey: 'admin.nav.rentals', to: '/admin/locations', icon: KeyRoundIcon },

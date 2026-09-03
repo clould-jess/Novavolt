@@ -71,12 +71,12 @@
   },
   "nav": {
     "home": "Accueil",
-    "vehicles": "Véhicules",
-    "solutions": "Solutions & Offres",
+    "vehicles": "Nos voitures",
+    "solutions": "Solutions",
     "resources": "Ressources & Guides",
     "drivers": "Pour chauffeurs VTC",
     "individuals": "Pour particuliers",
-    "fleet": "Flotte B2B",
+    "fleet": "Partage de voiture",
     "blog": "Blogue",
     "howItWorks": "Comment ça marche",
     "pricing": "Tarifs",
@@ -86,7 +86,7 @@
     "sub": {
       "driversDesc": "Véhicules équipés Uber & Lyft avec formule hebdomadaire.",
       "individualsDesc": "Location électrique à la journée, week-end ou au mois.",
-      "fleetDesc": "Mettre vos véhicules EV en gestion locative clé en main.",
+      "fleetDesc": "Partagez votre véhicule EV et générez des revenus sans effort.",
       "howItWorksDesc": "Le processus simple en 3 étapes de la réservation aux clés.",
       "pricingDesc": "Transparence des forfaits hebdomadaires sans surprises.",
       "blogDesc": "Guides de rentabilité, astuces et conseils de recharge.",
@@ -120,28 +120,18 @@
     "unavailable": "Indisponible"
   },
   "hero": {
-    "title": "Louez l'électrique. Roulez plus loin.",
-    "subtitle": "Des véhicules électriques fiables pour chauffeurs professionnels et particuliers au Canada.",
+    "title": "Voitures de location flexibles, Prêt pour Uber et Lyft*",
+    "titleLine1": "Voitures de",
+    "titleLine2": "location",
+    "titleLine3": "flexibles, Prêt",
+    "titleLine4": "pour Uber et",
+    "subtitle": "Nous offrons une expérience de conduite premium, construite autour de la confiance, du confort et du style. Commencez votre carrière de pilote au Canada dès aujourd’hui.",
+    "ctaRent": "LOUER AUJOURD’HUI",
+    "ctaCars": "VOIR LES VOITURES",
+    "disclaimer": "* Les termes et conditions s’appliquent",
     "ctaPrimary": "Voir les véhicules",
     "ctaSecondary": "Je suis chauffeur Uber/Lyft",
-    "imageAlt": "Véhicule électrique moderne sur une route urbaine canadienne",
-    "reassurance": {
-      "support": "Assistance",
-      "maintenance": "Entretien",
-      "insurance": "Assurance disponible",
-      "booking": "Réservation simple"
-    },
-    "quote": {
-      "title": "Vérifier la disponibilité",
-      "city": "Ville",
-      "type": "Type de location",
-      "start": "Date de départ",
-      "end": "Date de retour",
-      "cta": "Voir la disponibilité",
-      "typeDaily": "À la journée",
-      "typeWeekly": "À la semaine",
-      "typeMonthly": "Au mois"
-    }
+    "imageAlt": "Voiture de location électrique pour chauffeurs Uber et Lyft au Canada"
   },
   "trust": {
     "title": "Pensé pour les chauffeurs et les particuliers.",
@@ -1338,8 +1328,23 @@
     },
     "b3": {
       "title": "Guide Ultime de la Recharge Rapide (Niveau 3) pour Chauffeurs",
-      "excerpt": "Les meilleures bornes de recharge rapide à Montréal, Montréal et Montréal pour ne jamais perdre de temps entre deux courses.",
+      "excerpt": "Les meilleures bornes de recharge rapide à Montréal et environnants pour ne jamais perdre de temps entre deux courses.",
       "content": "Pour un chauffeur VTC, le temps c'est de l'argent. Savoir où et quand recharger son véhicule électrique est la clé d'une journée de travail efficace. Les bornes de recharge rapide en courant continu (DCFC) permettent de passer de 20% à 80% de charge en seulement 25 à 35 minutes. Nous recommandons de planifier vos recharges durant vos pauses repas ou aux heures creuses entre les deux pics de demande VTC."
+    },
+    "b4": {
+      "title": "Comment Rentabiliser Votre Véhicule Électrique avec le Partage Novavolt",
+      "excerpt": "Mettez votre véhicule EV inutilisé en gestion locative et générez un revenu passif récurrent en toute tranquillité.",
+      "content": "Vous possédez un véhicule électrique qui dort dans votre entrée ? Grâce au programme de partage de voiture Novavolt, vous pouvez confier votre EV à des chauffeurs qualifiés et vérifiés. Nous gérons l'assurance, l'entretien régulier et la relation client, vous permettant de toucher un revenu mensuel net garanti."
+    },
+    "b5": {
+      "title": "Tesla Model 3 vs Model Y : Lequel Choisir pour le VTC ?",
+      "excerpt": "Comparatif complet de l'espace de chargement, du confort passager et du coût de fonctionnement hebdomadaire.",
+      "content": "La Tesla Model 3 et le Model Y sont les deux choix phares des chauffeurs Uber & Lyft au Canada. Alors que la Model 3 offre la meilleure efficacité énergétique et un coût de location réduit, le Model Y séduit par son hayon spacieux et sa garde au sol idéale en hiver. Découvrez notre guide d'achat pour faire le bon choix."
+    },
+    "b6": {
+      "title": "Subventions et Incitatifs EV au Canada en 2026",
+      "excerpt": "Le point complet sur les aides fédérales et provinciales pour le passage à la mobilité zéro émission.",
+      "content": "Le gouvernement canadien et les provinces proposent plusieurs programmes de soutien pour accélérer l'adoption des véhicules zéro émission. Des rabais à l'achat jusqu'aux subventions pour l'installation de bornes de recharge à domicile, découvrez tous les avantages fiscaux accessibles en 2026."
     }
   }
 }
