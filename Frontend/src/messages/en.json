@@ -5,7 +5,7 @@
     "tagline": "Electric mobility, made simple.",
     "phone": "+1 (438) 990-3762",
     "email": "location.novavolt@gmail.com",
-    "hours": "Monâ€“Fri 8 a.m. to 7 p.m. Â· Sat 9 a.m. to 4 p.m. (ET)",
+    "hours": "Mon–Fri 8 a.m. to 7 p.m. · Sat 9 a.m. to 4 p.m. (ET)",
     "from": "from",
     "perDay": "/ day",
     "perWeek": "/ week",
@@ -20,7 +20,7 @@
     "search": "Search",
     "filters": "Filters",
     "reset": "Reset",
-    "loading": "Loadingâ€¦",
+    "loading": "Loading…",
     "loadMore": "Load more",
     "results": "results",
     "noResults": "No results",
@@ -76,7 +76,7 @@
     "resources": "Resources & Guides",
     "drivers": "For Rideshare Drivers",
     "individuals": "For Individuals",
-    "fleet": "Car Sharing",
+    "fleet": "Uber",
     "blog": "Blog",
     "howItWorks": "How it works",
     "pricing": "Pricing",
@@ -86,7 +86,7 @@
     "sub": {
       "driversDesc": "Uber & Lyft ready vehicles with weekly rate.",
       "individualsDesc": "Daily, weekend or monthly electric rental.",
-      "fleetDesc": "Share your EV vehicle and generate effortless income.",
+      "fleetDesc": "Explore rental options for driving with Uber.",
       "howItWorksDesc": "Simple 3-step path from reservation to keys.",
       "pricingDesc": "Transparent weekly plans with no surprises.",
       "blogDesc": "Profitability guides, tips and charging advice.",
@@ -164,23 +164,21 @@
   },
   "how": {
     "title": "How it works",
-    "subtitle": "Four steps, without unnecessary paperwork.",
-    "s1": { "title": "Pick your vehicle", "body": "Filter by city, use and range, then compare rates." },
-    "s2": { "title": "Send your request", "body": "Choose your dates and submit your request in minutes." },
-    "s3": { "title": "Complete your file", "body": "Upload your documents online. Our team reviews them quickly." },
-    "s4": { "title": "Hit the road", "body": "Sign the contract, pick up the vehicle and leave fully charged." },
-    "s5": { "title": "Create your account", "body": "A secure account to track your file, payments and rental." },
-    "tabsDriver": "Professional driver",
-    "tabsIndividual": "Individual",
-    "needTitle": "What you'll need",
-    "needSubtitle": "Indicative information: the final list is confirmed by our team based on your profile and province.",
-    "need1": "Valid Canadian driver's licence",
-    "need2": "Complete, verifiable contact details",
-    "need3": "Payment method in the renter's name",
-    "need4": "Additional documents by profile (platform driver profile, proof of address)"
+    "subtitle": "Four simple steps with support from our team.",
+    "cta": "Send my request",
+    "s1": { "title": "Browse our vehicles", "body": "View the available vehicles and choose the ones that fit your needs." },
+    "s2": { "title": "Send your request", "body": "Complete the short form with your contact details. No account is required." },
+    "s3": { "title": "Our team contacts you", "body": "We will get back to you within 24 hours to understand your needs and answer your questions." },
+    "s4": { "title": "Finalize with NovaVolt", "body": "Together, we confirm the next steps and the information needed for your rental." },
+    "needTitle": "To get started",
+    "needSubtitle": "You only need a few details to send your request.",
+    "need1": "Your first and last name",
+    "need2": "A Canadian phone number and email address",
+    "need3": "The city where you want to rent",
+    "need4": "Your NovaVolt team will guide you through the next steps"
   },
   "featured": {
-    "title": "Featured vehicles",
+    "title": "Our vehicles",
     "subtitle": "A selection of models available this week across our cities.",
     "filterAll": "All",
     "filterDrivers": "Drivers",
@@ -208,22 +206,13 @@
   },
   "testimonials": {
     "title": "What customers say about us",
-    "subtitle": "Demonstration testimonials.",
-    "t1": {
-      "quote": "I run my evening shifts without thinking about gas. The weekly rate is clear and the car was ready on the agreed day.",
-      "name": "Karim B.",
-      "role": "Uber driver, Montreal"
-    },
-    "t2": {
-      "quote": "Rented for a weekend out of town. Easy handover and the team answered in under an hour.",
-      "name": "Julie L.",
-      "role": "Weekend rental, Montréal"
-    },
-    "t3": {
-      "quote": "The online file took me twenty minutes. I like seeing my payments and contract in one place.",
-      "name": "Daniel O.",
-      "role": "Lyft driver, Montréal"
-    }
+    "subtitle": "Experiences shared by NovaVolt drivers and renters.",
+    "t1": { "name": "Karim B.", "role": "Uber driver, Montreal", "quote": "NovaVolt helped me start my Uber trips without waiting to buy a car. The weekly rate was clear, the vehicle was ready as promised, and the team took time to explain the next steps." },
+    "t2": { "name": "Aïcha D.", "role": "Uber driver, Montreal", "quote": "After activating my Uber account, I needed a reliable vehicle quickly. My request was easy to send and NovaVolt called me back to guide me through the process. I can now organize my driving weeks with more confidence." },
+    "t3": { "name": "Marc T.", "role": "Uber driver, Laval", "quote": "I wanted to switch to electric for my longer driving days. The car is comfortable, the range works well for my routine, and the team’s support makes a real difference when you are getting started." },
+    "t4": { "name": "Julie L.", "role": "Personal rental, Montreal", "quote": "I rented a vehicle for a weekend outside the city. The information was easy to understand, the pickup went smoothly, and I appreciated having someone available to answer my questions." },
+    "t5": { "name": "Daniel O.", "role": "Uber driver, Longueuil", "quote": "The most useful part for me was the guidance. Between the Uber account, the documents, and choosing a vehicle, I knew exactly what to prepare. It helped me move forward with my driving plans faster." },
+    "t6": { "name": "Sophie M.", "role": "Uber driver, Montreal", "quote": "I wanted a flexible option before making a long-term commitment. NovaVolt helped me find a vehicle that fits my work, and I can now plan my driving hours with confidence." }
   },
   "finalCta": {
     "title": "Ready to drive electric?",
@@ -248,6 +237,15 @@
   },
   "vehiclesPage": {
     "title": "Find the vehicle that fits your route.",
+    "heroTitle": "Find the perfect car to start driving with Uber.",
+    "heroImageAlt": "NovaVolt electric car for Uber drivers",
+    "kpiResponse": "To get your car",
+    "kpiElectric": "Average income / week",
+    "kpiSupport": "100% electric cars",
+    "includedTitle": "Included in all rentals",
+    "includedKm": "Unlimited kilometers",
+    "includedInsurance": "Insurance",
+    "includedMaintenance": "Maintenance, tires and more",
     "subtitle": "Compare range, city, use profile and rate. Availability is kept current by our team.",
     "searchPlaceholder": "Make, model or city",
     "tabAll": "All",

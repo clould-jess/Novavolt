@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRightIcon, CalendarIcon, ClockIcon } from 'lucide-react';
+import { ArrowRightIcon, CalendarIcon } from 'lucide-react';
 import { useI18n } from '../../contexts/I18nContext';
 import { mockBlogPosts } from '../../data/blog';
 import { Reveal } from '../ui/Reveal';
@@ -68,10 +68,6 @@ export function BlogPreviewSection() {
                     <span className="flex items-center gap-1">
                       <CalendarIcon className="h-3.5 w-3.5" aria-hidden="true" />
                       {new Date(post.date).toLocaleDateString('fr-CA', { day: 'numeric', month: 'short', year: 'numeric' })}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <ClockIcon className="h-3.5 w-3.5" aria-hidden="true" />
-                      {post.readTime}
                     </span>
                   </div>
                 </div>

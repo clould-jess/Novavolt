@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { BrowserRouter, Navigate, Route, Routes, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { I18nProvider } from './contexts/I18nContext';
 import { ToastProvider } from './contexts/ToastContext';
 import { MarketingLayout } from './components/marketing/MarketingLayout';
@@ -36,7 +36,6 @@ import { PortalIncident } from './pages/portal/Incident';
 import { PortalSupport } from './pages/portal/Support';
 import { PortalProfile } from './pages/portal/Profile';
 import { AdminDashboard } from './pages/admin/Dashboard';
-import { AdminDossiers } from './pages/admin/Dossiers';
 import { AdminReservations } from './pages/admin/Reservations';
 import { AdminVehicles } from './pages/admin/Vehicles';
 import { AdminVehicleWizardPage } from './pages/admin/VehicleWizardPage';
@@ -53,6 +52,18 @@ import { useToast } from './contexts/ToastContext';
 
 
 const ENABLE_INTERNAL_ROUTES = true;
+
+function RentalRequestHashScroll() {
+  const { hash } = useLocation();
+
+  useEffect(() => {
+    if (hash !== '#demande-location') return;
+    const timer = window.setTimeout(() => document.getElementById('demande-location')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 0);
+    return () => window.clearTimeout(timer);
+  }, [hash]);
+
+  return null;
+}
 
 function SessionExpiryHandler() {
   const navigate = useNavigate();
@@ -81,6 +92,7 @@ export function App() {
       <ToastProvider>
         <BrowserRouter>
           <SessionExpiryHandler />
+          <RentalRequestHashScroll />
           <Routes>
             {/* Public marketing site */}
             <Route element={<MarketingLayout />}>
@@ -135,7 +147,6 @@ export function App() {
                     <Route path="notifications" element={<AdminNotifications />} />
                     <Route path="security" element={<SecurityActivity />} />
                     <Route path="clients" element={<AdminComingSoon />} />
-                    <Route path="dossiers" element={<AdminDossiers />} />
                     <Route path="vehicules" element={<AdminVehicles />} />
                     <Route path="vehicules/nouveau" element={<AdminVehicleWizardPage />} />
                     <Route path="vehicules/:id/modifier" element={<AdminVehicleWizardPage />} />

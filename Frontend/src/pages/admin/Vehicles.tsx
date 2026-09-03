@@ -27,6 +27,7 @@ import { Button } from '../../components/ui/Button';
 import { Card, CardHeader } from '../../components/ui/Card';
 import { EmptyState } from '../../components/ui/EmptyState';
 import { Input } from '../../components/ui/Input';
+import { IconButton } from '../../components/ui/IconButton';
 import { PageHeading } from '../../components/ui/PageHeading';
 import { Select } from '../../components/ui/Select';
 import { StatusBadge } from '../../components/ui/StatusBadge';
@@ -340,6 +341,15 @@ export function AdminVehicles() {
                         <StatusBadge kind="vehicle" value={mapStatusToBadge(vehicle.status)} />
                         <Badge tone="inverse">{num(photoCount)}/{MAX_VEHICLE_PHOTOS}</Badge>
                       </div>
+                      <IconButton
+                        label="Supprimer ce véhicule"
+                        icon={<Trash2Icon className="h-4 w-4" />}
+                        tone="danger"
+                        size="sm"
+                        className="absolute right-4 top-4 border border-white/80 bg-white/95 shadow-sm backdrop-blur hover:bg-red-50"
+                        disabled={pendingStatus !== null || deleting}
+                        onClick={() => setDeleteTarget(vehicle)}
+                      />
                     </div>
 
                     <div className="space-y-4 p-5">
@@ -408,7 +418,7 @@ export function AdminVehicles() {
                             onClick={() => navigate(`/admin/vehicules/${vehicle.id}/modifier`)}
                           >
                             {t('admin.fleet.cardEdit')}
-                          </Button>                          <Button variant="danger" size="sm" iconLeft={<Trash2Icon className="h-4 w-4" />} disabled={pendingStatus !== null} onClick={() => setDeleteTarget(vehicle)}>Supprimer</Button>
+                          </Button>
                         </div>
                       </div>
                     </div>

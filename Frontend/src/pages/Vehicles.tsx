@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { CarFrontIcon, SlidersHorizontalIcon } from 'lucide-react';
+import { CarFrontIcon, Clock3Icon, GaugeIcon, ShieldCheckIcon, SlidersHorizontalIcon, WrenchIcon } from 'lucide-react';
 import { useI18n } from '../contexts/I18nContext';
 import type { City, Powertrain, UseCase, Vehicle } from '../types';
 import { Button } from '../components/ui/Button';
@@ -14,6 +14,8 @@ import { SectionTitle } from '../components/ui/SectionTitle';
 import { Select } from '../components/ui/Select';
 import { Tabs } from '../components/ui/Tabs';
 import { VehicleCard } from '../components/marketing/VehicleCard';
+import { PageHero } from '../components/marketing/PageHero';
+import { images } from '../data/images';
 import { ApiError } from '../services/api';
 import { listPublicVehicles, mapPublicVehicles } from '../services/publicVehicles';
 
@@ -22,7 +24,7 @@ type Tab = 'all' | 'driver' | 'individual' | 'electric' | 'hybrid';
 const PAGE_SIZE = 6;
 
 export function Vehicles() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [params] = useSearchParams();
   const [catalog, setCatalog] = useState<Vehicle[]>([]);
   const [totalCount, setTotalCount] = useState(0);
@@ -113,7 +115,7 @@ export function Vehicles() {
         if (tab === 'electric' || tab === 'hybrid') return vehicle.powertrain === (tab as Powertrain);
         return true;
       }),
-    [catalog, query, city, brand, minRange, availableOnly, tab, t],
+    [catalog, city, brand, minRange, availableOnly],
   );
 
   const reset = () => {
@@ -189,42 +191,29 @@ export function Vehicles() {
 
   return (
     <>
-      <section className="border-b border-line bg-soft px-4 pb-10 pt-28 sm:px-6 lg:px-8 lg:pb-12 lg:pt-36">
-        <div className="mx-auto max-w-content">
-          <SectionTitle
-            as="h1"
-            size="display"
-            variant={0}
-            eyebrow={t('nav.vehicles')}
-            title={t('vehiclesPage.title')}
-            subtitle={t('vehiclesPage.subtitle')}
-            className="max-w-3xl"
-          />
+      <PageHero
+        eyebrow={t('nav.vehicles')}
+        title={t('vehiclesPage.heroTitle')}
+        subtitle={t('vehiclesPage.subtitle')}
+        image={{ src: images.suv, alt: t('vehiclesPage.heroImageAlt') }}
+        actions={<Button to="/#demande-location" size="lg">{t('hero.ctaRent')}</Button>}
+      />
 
-          <div className="mt-8 flex flex-col gap-4 lg:flex-row lg:items-center">
-            <SearchBar
-              id="vehicles-search"
-              size="lg"
-              label={t('common.search')}
-              placeholder={t('vehiclesPage.searchPlaceholder')}
-              value={query}
-              onChange={setQuery}
-              clearLabel={t('common.reset')}
-              className="lg:max-w-md"
-            />
+      <section className="bg-ink px-4 py-8 text-white sm:px-6 lg:px-8">
+        <div className="mx-auto grid max-w-content divide-y divide-white/10 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+          {[
+            { value: locale === 'fr' ? '24 h' : '24 hr', label: t('vehiclesPage.kpiResponse'), icon: <Clock3Icon className="h-5 w-5" /> },
+            { value: '$1,600', label: t('vehiclesPage.kpiElectric'), icon: <GaugeIcon className="h-5 w-5" /> },
+            { value: '100%', label: t('vehiclesPage.kpiSupport'), icon: <CarFrontIcon className="h-5 w-5" /> },
+          ].map((item) => <div key={item.label} className="flex items-center gap-4 px-4 py-5 sm:px-8"><span className="grid h-10 w-10 place-items-center rounded-full bg-action/15 text-sky-300">{item.icon}</span><div><p className="font-display text-2xl font-semibold text-sky-300">{item.value}</p><p className="mt-0.5 text-2xs font-medium text-sky-100/65">{item.label}</p></div></div>)}
+        </div>
+      </section>
 
-            <Tabs
-              label={t('common.filters')}
-              value={tab}
-              onChange={(id) => setTab(id as Tab)}
-              items={[
-                { id: 'all', label: t('vehiclesPage.tabAll') },
-                { id: 'driver', label: t('vehiclesPage.tabDrivers') },
-                { id: 'individual', label: t('vehiclesPage.tabIndividuals') },
-                { id: 'electric', label: t('vehiclesPage.tabElectric') },
-                { id: 'hybrid', label: t('vehiclesPage.tabHybrid') },
-              ]}
-            />
+      <section className="border-b border-line bg-white px-4 py-14 sm:px-6 lg:px-8 lg:py-18">
+        <div className="mx-auto max-w-4xl">
+          <div className="text-center"><h2 className="font-display text-3xl font-semibold tracking-[-0.025em] text-ink sm:text-4xl">{t('vehiclesPage.includedTitle')}</h2><svg className="mx-auto mt-3 h-5 w-32 overflow-visible text-action" viewBox="0 0 128 20" aria-hidden="true"><path d="M3 14 C35 4, 82 3, 125 11" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" /></svg></div>
+          <div className="mt-9 grid gap-4 sm:grid-cols-3">
+            {[{ icon: <GaugeIcon className="h-6 w-6" />, label: t('vehiclesPage.includedKm') }, { icon: <ShieldCheckIcon className="h-6 w-6" />, label: t('vehiclesPage.includedInsurance') }, { icon: <WrenchIcon className="h-6 w-6" />, label: t('vehiclesPage.includedMaintenance') }].map((item) => <div key={item.label} className="flex items-center gap-4 rounded-card border border-line bg-white p-5 shadow-xs"><span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-sky-50 text-action">{item.icon}</span><p className="text-sm font-semibold leading-snug text-ink">{item.label}</p></div>)}
           </div>
         </div>
       </section>

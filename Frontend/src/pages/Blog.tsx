@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRightIcon, BookOpenIcon, ClockIcon, SearchIcon } from 'lucide-react';
+import { ArrowRightIcon, BookOpenIcon, SearchIcon } from 'lucide-react';
 import { useI18n } from '../contexts/I18nContext';
 import { mockBlogPosts } from '../data/blog';
 import { Card } from '../components/ui/Card';
@@ -85,12 +85,8 @@ export function Blog() {
 
                     <div className="flex flex-1 flex-col justify-between p-6">
                       <div>
-                        <div className="flex items-center justify-between text-[0.7rem] font-semibold text-muted">
+                        <div className="text-[0.7rem] font-semibold text-muted">
                           <span>{post.date}</span>
-                          <span className="flex items-center gap-1">
-                            <ClockIcon className="h-3 w-3" />
-                            {post.readTime}
-                          </span>
                         </div>
 
                         <h3 className="mt-3 font-display text-lg font-bold text-ink transition-colors group-hover:text-action">

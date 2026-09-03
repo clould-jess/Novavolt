@@ -107,7 +107,6 @@ export const portalNav: NavItem[] = [
 
 export const adminNav: NavItem[] = [
   // { labelKey: 'admin.nav.customers', to: '/admin/clients', icon: UsersIcon },
-  { labelKey: 'admin.nav.applications', to: '/admin/dossiers', icon: FolderOpenIcon },
   { labelKey: 'admin.nav.vehicles', to: '/admin/vehicules', icon: CarFrontIcon },
   { labelKey: 'Demandes de location', to: '/admin/demandes-location', icon: ClipboardListIcon },
   // { labelKey: 'admin.nav.calendar', to: '/admin/calendrier', icon: CalendarDaysIcon },

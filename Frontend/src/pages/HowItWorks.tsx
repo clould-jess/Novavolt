@@ -1,12 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { CreditCardIcon, FileTextIcon, PhoneIcon, UserCheckIcon } from 'lucide-react';
 import { useI18n } from '../contexts/I18nContext';
-import type { UseCase } from '../types';
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
 import { Reveal } from '../components/ui/Reveal';
 import { SectionTitle } from '../components/ui/SectionTitle';
-import { Tabs } from '../components/ui/Tabs';
 import { CtaBanner } from '../components/marketing/CtaBanner';
 import { PageHero } from '../components/marketing/PageHero';
 
@@ -17,13 +15,10 @@ const needs = [
 { key: 'how.need4', icon: FileTextIcon }];
 
 
-const driverOrder = ['s1', 's5', 's3', 's2', 's4'];
-const individualOrder = ['s1', 's5', 's2', 's3', 's4'];
+const journey = ['s1', 's2', 's3', 's4'];
 
 export function HowItWorks() {
   const { t } = useI18n();
-  const [audience, setAudience] = useState<UseCase>('driver');
-  const order = audience === 'driver' ? driverOrder : individualOrder;
 
   return (
     <>
@@ -33,29 +28,18 @@ export function HowItWorks() {
         subtitle={t('how.subtitle')}
         variant={1}
         actions={
-        <Button to="/vehicules" size="lg">
-            {t('common.viewVehicles')}
+        <Button to="/#demande-location" size="lg">
+            {t('how.cta')}
           </Button>
         } />
       
 
       <section className="bg-white px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
         <div className="mx-auto max-w-content">
-          <Tabs
-            label={t('how.title')}
-            value={audience}
-            onChange={(id) => setAudience(id as UseCase)}
-            items={[
-            { id: 'driver', label: t('how.tabsDriver') },
-            { id: 'individual', label: t('how.tabsIndividual') }]
-            }
-            className="w-fit" />
-          
-
           {/* Vertical rail: the sequence is the content here, so it reads as one continuous path. */}
           <ol className="mt-10 lg:mt-14">
-            {order.map((id, index) =>
-            <Reveal as="li" key={`${audience}-${id}`} index={index} className="relative flex gap-5 pb-8 last:pb-0">
+            {journey.map((id, index) =>
+            <Reveal as="li" key={id} index={index} className="relative flex gap-5 pb-8 last:pb-0">
                 <div className="flex flex-col items-center">
                   <span
                   className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-action bg-white font-display text-sm font-bold text-action"
@@ -63,7 +47,7 @@ export function HowItWorks() {
                   
                     {index + 1}
                   </span>
-                  {index < order.length - 1 && <span className="mt-1 w-px flex-1 bg-line" aria-hidden="true" />}
+                  {index < journey.length - 1 && <span className="mt-1 w-px flex-1 bg-line" aria-hidden="true" />}
                 </div>
                 <div className="max-w-2xl pt-1.5">
                   <h2 className="font-display text-xl font-semibold tracking-[-0.02em] text-ink">

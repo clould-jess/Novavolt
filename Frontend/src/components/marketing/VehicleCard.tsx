@@ -26,15 +26,6 @@ export function VehicleCard({ vehicle, className }: VehicleCardProps) {
       
       <div className="relative">
         <VehicleImage src={vehicle.imageUrl} alt={`${name} ${vehicle.year}`} className="aspect-[16/10]" />
-        <div className="absolute left-3 top-3 flex flex-wrap gap-1.5">
-          <Badge tone={vehicle.powertrain === 'electric' ? 'info' : 'neutral'}>
-            {t(`powertrain.${vehicle.powertrain}`)}
-          </Badge>
-          {vehicle.useCases.includes('driver') && <Badge tone="accent">{t('badge.rideshare')}</Badge>}
-        </div>
-        <div className="absolute right-3 top-3">
-          <StatusBadge kind="vehicle" value={vehicle.status} />
-        </div>
       </div>
 
       <div className="flex flex-1 flex-col p-5">

@@ -6,7 +6,6 @@ export interface BlogPost {
   contentKey: string;
   category: 'vtc' | 'ev' | 'rentability' | 'tips';
   date: string;
-  readTime: string;
   image: string;
   author: string;
 }
@@ -20,7 +19,6 @@ export const mockBlogPosts: BlogPost[] = [
     contentKey: 'blog.b1.content',
     category: 'rentability',
     date: '2026-08-10',
-    readTime: '5 min',
     image: 'https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=1200&q=80',
     author: 'Équipe Novavolt'
   },
@@ -32,7 +30,6 @@ export const mockBlogPosts: BlogPost[] = [
     contentKey: 'blog.b2.content',
     category: 'tips',
     date: '2026-08-02',
-    readTime: '6 min',
     image: 'https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&w=1200&q=80',
     author: 'Marc-André Tremblay'
   },
@@ -44,7 +41,6 @@ export const mockBlogPosts: BlogPost[] = [
     contentKey: 'blog.b3.content',
     category: 'ev',
     date: '2026-07-24',
-    readTime: '4 min',
     image: 'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?auto=format&fit=crop&w=1200&q=80',
     author: 'Sophie Lavoie'
   },
@@ -56,7 +52,6 @@ export const mockBlogPosts: BlogPost[] = [
     contentKey: 'blog.b4.content',
     category: 'rentability',
     date: '2026-07-15',
-    readTime: '7 min',
     image: 'https://images.unsplash.com/photo-1554744512-d6c603f27c54?auto=format&fit=crop&w=1200&q=80',
     author: 'Jean-Philippe Gagnon'
   },
@@ -68,7 +63,6 @@ export const mockBlogPosts: BlogPost[] = [
     contentKey: 'blog.b5.content',
     category: 'tips',
     date: '2026-07-01',
-    readTime: '5 min',
     image: 'https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=1200&q=80',
     author: 'Équipe Novavolt'
   },
@@ -80,7 +74,6 @@ export const mockBlogPosts: BlogPost[] = [
     contentKey: 'blog.b6.content',
     category: 'ev',
     date: '2026-06-18',
-    readTime: '4 min',
     image: 'https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1200&q=80',
     author: 'Sophie Lavoie'
   }

@@ -76,7 +76,7 @@
     "resources": "Ressources & Guides",
     "drivers": "Pour chauffeurs VTC",
     "individuals": "Pour particuliers",
-    "fleet": "Partage de voiture",
+    "fleet": "Uber",
     "blog": "Blogue",
     "howItWorks": "Comment ça marche",
     "pricing": "Tarifs",
@@ -86,7 +86,7 @@
     "sub": {
       "driversDesc": "Véhicules équipés Uber & Lyft avec formule hebdomadaire.",
       "individualsDesc": "Location électrique à la journée, week-end ou au mois.",
-      "fleetDesc": "Partagez votre véhicule EV et générez des revenus sans effort.",
+      "fleetDesc": "Découvrez nos options de location pour conduire avec Uber.",
       "howItWorksDesc": "Le processus simple en 3 étapes de la réservation aux clés.",
       "pricingDesc": "Transparence des forfaits hebdomadaires sans surprises.",
       "blogDesc": "Guides de rentabilité, astuces et conseils de recharge.",
@@ -164,38 +164,21 @@
   },
   "how": {
     "title": "Comment ça marche",
-    "subtitle": "Quatre étapes, sans paperasse inutile.",
-    "s1": {
-      "title": "Choisissez votre véhicule",
-      "body": "Filtrez par ville, usage et autonomie, puis comparez les tarifs."
-    },
-    "s2": {
-      "title": "Envoyez votre demande",
-      "body": "Sélectionnez vos dates et transmettez votre demande en quelques minutes."
-    },
-    "s3": {
-      "title": "Complétez votre dossier",
-      "body": "Ajoutez vos documents en ligne. Notre équipe les vérifie rapidement."
-    },
-    "s4": {
-      "title": "Prenez la route",
-      "body": "Signature du contrat, remise du véhicule et départ, chargé à bloc."
-    },
-    "s5": {
-      "title": "Créez votre compte",
-      "body": "Un compte sécurisé pour suivre votre dossier, vos paiements et votre location."
-    },
-    "tabsDriver": "Chauffeur professionnel",
-    "tabsIndividual": "Particulier",
-    "needTitle": "Ce dont vous aurez besoin",
-    "needSubtitle": "Informations indicatives : la liste finale est confirmée par notre équipe selon votre profil et votre province.",
-    "need1": "Permis de conduire canadien valide",
-    "need2": "Coordonnées complètes et vérifiables",
-    "need3": "Moyen de paiement au nom du locataire",
-    "need4": "Documents complémentaires selon le profil (profil de conducteur de plateforme, preuve d'adresse)"
+    "subtitle": "Quatre étapes simples pour être accompagné par notre équipe.",
+    "cta": "Envoyer ma demande",
+    "s1": { "title": "Découvrez nos véhicules", "body": "Consultez les véhicules disponibles et choisissez ceux qui correspondent à vos besoins." },
+    "s2": { "title": "Envoyez votre demande", "body": "Remplissez le court formulaire avec vos coordonnées. Aucun compte n’est nécessaire." },
+    "s3": { "title": "Notre équipe vous contacte", "body": "Nous revenons vers vous dans les 24 heures pour comprendre votre besoin et répondre à vos questions." },
+    "s4": { "title": "Finalisez avec NovaVolt", "body": "Nous confirmons ensemble les prochaines étapes et les informations nécessaires à votre location." },
+    "needTitle": "Pour commencer",
+    "needSubtitle": "Vous n’avez besoin que de quelques informations pour envoyer votre demande.",
+    "need1": "Votre prénom et votre nom",
+    "need2": "Un numéro de téléphone canadien et une adresse courriel",
+    "need3": "La ville où vous souhaitez louer",
+    "need4": "Votre équipe NovaVolt vous guidera pour la suite"
   },
   "featured": {
-    "title": "Véhicules vedettes",
+    "title": "Nos véhicules",
     "subtitle": "Une sélection de modèles disponibles cette semaine dans notre ville.",
     "filterAll": "Tous",
     "filterDrivers": "Chauffeurs",
@@ -238,22 +221,13 @@
   },
   "testimonials": {
     "title": "Ce que nos clients disent de nous",
-    "subtitle": "Témoignages de démonstration.",
-    "t1": {
-      "quote": "Je fais mes quarts du soir sans penser à l'essence. Le tarif hebdomadaire est clair et la voiture était prête le jour prévu.",
-      "name": "Karim B.",
-      "role": "Chauffeur Uber, Montréal"
-    },
-    "t2": {
-      "quote": "Louée pour un week-end à l'extérieur de la ville. Prise en main simple et l'équipe a répondu en moins d'une heure.",
-      "name": "Julie L.",
-      "role": "Location week-end, Montréal"
-    },
-    "t3": {
-      "quote": "Le dossier en ligne m'a pris vingt minutes. J'apprécie de voir mes paiements et mon contrat au même endroit.",
-      "name": "Daniel O.",
-      "role": "Chauffeur Lyft, Montréal"
-    }
+    "subtitle": "Des retours d’expérience de chauffeurs et de locataires NovaVolt.",
+    "t1": { "name": "Karim B.", "role": "Chauffeur Uber, Montréal", "quote": "Avec NovaVolt, j’ai pu commencer mes courses Uber sans attendre l’achat d’une voiture. Le tarif hebdomadaire est clair, le véhicule était prêt comme prévu et l’équipe a pris le temps de m’expliquer les prochaines étapes." },
+    "t2": { "name": "Aïcha D.", "role": "Chauffeuse Uber, Montréal", "quote": "Après avoir activé mon compte Uber, j’avais besoin d’une voiture fiable rapidement. Ma demande a été simple à envoyer et NovaVolt m’a rappelée pour m’accompagner dans le processus. Aujourd’hui, je peux organiser mes semaines de conduite avec plus de sérénité." },
+    "t3": { "name": "Marc T.", "role": "Chauffeur Uber, Laval", "quote": "Je voulais passer à l’électrique pour mes longues journées de conduite. La voiture est agréable, l’autonomie répond bien à mon rythme et le suivi de l’équipe fait une vraie différence quand on démarre." },
+    "t4": { "name": "Julie L.", "role": "Location personnelle, Montréal", "quote": "J’ai loué un véhicule pour un week-end à l’extérieur de la ville. Les informations étaient faciles à comprendre, la prise en charge s’est bien passée et j’ai apprécié d’avoir un contact disponible pour mes questions." },
+    "t5": { "name": "Daniel O.", "role": "Chauffeur Uber, Longueuil", "quote": "Le plus utile pour moi a été l’accompagnement. Entre le compte Uber, les documents et le choix du véhicule, on sait exactement quoi préparer. Cela m’a permis d’avancer plus vite dans mon projet de conduite." },
+    "t6": { "name": "Sophie M.", "role": "Chauffeuse Uber, Montréal", "quote": "Je cherchais une solution flexible avant de m’engager sur le long terme. NovaVolt m’a aidée à trouver un véhicule adapté à mon activité et je peux maintenant planifier mes heures de conduite avec confiance." }
   },
   "finalCta": {
     "title": "Prêt à prendre la route en électrique ?",
@@ -278,6 +252,15 @@
   },
   "vehiclesPage": {
     "title": "Trouvez le véhicule adapté à votre trajet.",
+    "heroTitle": "Trouvez la voiture idéale pour commencer à conduire avec Uber.",
+    "heroImageAlt": "Voiture électrique NovaVolt pour chauffeur Uber",
+    "kpiResponse": "Pour obtenir votre voiture",
+    "kpiElectric": "Revenu moyen / semaine",
+    "kpiSupport": "Voitures 100 % électriques",
+    "includedTitle": "Inclus dans toutes les locations",
+    "includedKm": "Kilométrage illimité",
+    "includedInsurance": "Assurance",
+    "includedMaintenance": "Entretien, pneus et plus encore",
     "subtitle": "Comparez l'autonomie, la ville, le profil d'usage et le tarif. Les disponibilités sont mises à jour par notre équipe.",
     "searchPlaceholder": "Marque, modèle ou ville",
     "tabAll": "Tous",

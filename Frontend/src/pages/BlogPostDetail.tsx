@@ -1,5 +1,5 @@
 import { Link, useParams } from 'react-router-dom';
-import { ArrowLeftIcon, CalendarIcon, ClockIcon, Share2Icon, UserIcon } from 'lucide-react';
+import { ArrowLeftIcon, CalendarIcon, Share2Icon, UserIcon } from 'lucide-react';
 import { useI18n } from '../contexts/I18nContext';
 import { mockBlogPosts } from '../data/blog';
 import { Button } from '../components/ui/Button';
@@ -49,10 +49,6 @@ export function BlogPostDetail() {
               <span className="flex items-center gap-1.5">
                 <CalendarIcon className="h-4 w-4 text-action" />
                 {post.date}
-              </span>
-              <span className="flex items-center gap-1.5">
-                <ClockIcon className="h-4 w-4 text-action" />
-                {post.readTime}
               </span>
             </div>
 

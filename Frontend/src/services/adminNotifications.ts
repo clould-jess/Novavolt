@@ -1,7 +1,7 @@
-﻿import { apiRequest } from './api';
+import { apiRequest } from './api';
 import { getAuthSession } from './auth';
 
-export type AdminNotificationType = 'FLEET_REQUEST' | 'RESERVATION_REQUEST' | 'CONTACT_MESSAGE';
+export type AdminNotificationType = 'FLEET_REQUEST' | 'RESERVATION_REQUEST' | 'RENTAL_REQUEST' | 'CONTACT_MESSAGE';
 export interface AdminNotification { id: string; type: AdminNotificationType; entityId: string; title: string; preview: string; readAt: string | null; createdAt: string; }
 export interface AdminNotificationsResponse { items: AdminNotification[]; total: number; unread: number; page: number; limit: number; }
 function token() { return getAuthSession()?.accessToken; }

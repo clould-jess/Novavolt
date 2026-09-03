@@ -4,7 +4,7 @@ import { useI18n } from '../../contexts/I18nContext';
 import { Reveal } from '../ui/Reveal';
 import { SectionTitle } from '../ui/SectionTitle';
 
-const CAR_IMAGE = 'https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=900&q=80';
+const CAR_IMAGE = 'https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&w=1200&q=85';
 
 const benefits = [
   { key: 'b1', icon: FuelIcon },

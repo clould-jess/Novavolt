@@ -23,7 +23,7 @@ export function AdminLayout() {
   const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
-    void listAdminNotifications().then((response) => setUnreadCount(response.unread)).catch(() => setUnreadCount(0));
+    void listAdminNotifications().then((response) => setUnreadCount(response.items.filter((item) => item.type !== 'FLEET_REQUEST' && !item.readAt).length)).catch(() => setUnreadCount(0));
   }, [pathname]);
 
   useEffect(() => {
